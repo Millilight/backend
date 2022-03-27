@@ -8,7 +8,7 @@ async function bootstrap() {
 
   // Get app config for cors settings and starting the app.
   const config = app.get<ConfigService>(ConfigService);
-  await app.listen(config.get<string>("app.port"));
+  await app.listen(config.get<string>("app.port"), "0.0.0.0");
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
