@@ -1,0 +1,25 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @upper on FIELD_DEFINITION
+
+input CreateUserDto {
+  age: Float!
+  email: String!
+  name: String!
+}
+
+type Mutation {
+  createUser(createUserDto: CreateUserDto!): User!
+}
+
+type Query {
+  users: [User!]!
+}
+
+type User {
+  age: Float!
+  email: String!
+  name: String!
+}
