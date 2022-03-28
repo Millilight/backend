@@ -23,9 +23,12 @@ You need a **recent** Node.js version (v16.14+).
 
 You should use [nvm](https://github.com/creationix/nvm).
 
-#### MongoDB
+#### Environment variables
 
-You just need a fairly recent [Mongo](https://www.mongodb.com/docs/manual/installation/) to run this.
+Add a .env file at the root of the project.
+You need to fill :
+    - APP_PORT
+    - DATABASE_MONGODB_HOST
 
 ### Node Dependencies
 
@@ -33,14 +36,6 @@ Dependencies resolved via npm:
 
 ```shell
 npm install
-```
-
-### Setup script
-
-Needed for various package (i.e. [Husky](#husky)):
-
-```shell
-npm run setup
 ```
 
 #### Runtime Dependencies
@@ -102,7 +97,7 @@ The application has two running modes:
 ### Dev runner
 
 ```shell
-npm run dev
+npm start
 ```
 
 [Nest](#nest) will automatically load .env.development and set NODE_ENV='DEVELOPMENT'. It then listens on `3030`.
