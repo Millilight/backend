@@ -6,7 +6,7 @@ export default () => ({
   },
   database: {
     mongodb: {
-      host: process.env.DATABASE_MONGODB_HOST || "mongodb://localhost/nest",
+      host: process.env.MONGODB_ADDON_URI || process.env.DATABASE_MONGODB_HOST || "mongodb://localhost/nest",
     },
   },
 });
