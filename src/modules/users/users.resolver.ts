@@ -5,6 +5,8 @@ import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from './users.decorator';
+import { Wishes } from './schemas/wishes.schema';
+import { UpdateWishesDto } from './dto/update-wishes.dto';
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
@@ -23,8 +25,13 @@ export class UsersResolver {
     return user;
   }
 
-  @Query(() => [User])
-  async users() {
-    return this.usersService.findAll();
+  @Mutation(() => Wishes)
+  @UseGuards(JwtAuthGuard)
+  async updateWishes(
+    @CurrentUser() user: User,
+    @Args("updateWishesDto") updateWishesDto: UpdateWishesDto
+  ): Promise<Wishes> {
+    //TODO service updateUser
+    return this.usersService.updateWishes(user, updateWishesDto);
   }
 }

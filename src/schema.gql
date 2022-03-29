@@ -24,16 +24,27 @@ input LoginUserDto {
 type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
+  updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
 }
 
 type Query {
   user: User!
-  users: [User!]!
+}
+
+input UpdateWishesDto {
+  burial_cremation: String
+  burial_cremation_place: String
 }
 
 type User {
+  _id: ID!
   email: String!
   firstname: String!
-  id: ID!
   lastname: String!
+  wishes: Wishes
+}
+
+type Wishes {
+  burial_cremation: String
+  burial_cremation_place: String
 }

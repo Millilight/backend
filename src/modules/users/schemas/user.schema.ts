@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { Wishes, WishesSchema } from './wishes.schema';
 
 export type UserDocument = UserDB & Document;
 @Schema()
@@ -10,9 +11,9 @@ export type UserDocument = UserDB & Document;
 class UserBase {
   // This class contains all the fiedls that are both in user db schema and user gql schema
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, name: '_id' })
+  @Prop({ type: MongooseSchema.Types.ObjectId })
   @Field(() => ID)
-  id?: string;
+  _id?: string;
 
   @Prop({ required: true })
   @Field(() => String)
@@ -29,6 +30,10 @@ class UserBase {
   })
   @Field(() => String)
   email: string;
+
+  @Prop({ type: WishesSchema, ref: 'Wishes' })
+  @Field(() => Wishes, { nullable: true })
+  wishes?: Wishes;
 }
 
 @ObjectType()
@@ -38,7 +43,6 @@ export class User extends UserBase {
 
 @Schema()
 export class UserDB extends UserBase {
-  toString = () => 'ABC';
   // This call contains all the fields only available in the db schema
   @Prop({ required: true, select: false })
   encrypted_password: string;

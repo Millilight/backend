@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDB, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Wishes } from './schemas/wishes.schema';
+import { UpdateWishesDto } from './dto/update-wishes.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,11 +37,25 @@ export class UsersService {
   }
 
   async findByID(user_id: string): Promise<User> {
-    return this.userModel.findOne({ id: user_id }).exec().then(userDocToUser);
+    return this.userModel.findOne({ _id: user_id }).exec().then(userDocToUser);
   }
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec().then(userDocsToUsers);
+  }
+
+  async updateWishes(
+    user: User,
+    updateWishesDto: UpdateWishesDto
+  ): Promise<Wishes> {
+    return this.userModel
+      .findOneAndUpdate(
+        { _id: user._id },
+        { wishes: updateWishesDto },
+        { new: true }
+      )
+      .exec()
+      .then((userDoc) => userDocToWishes(userDoc));
   }
 }
 const userDocsToUsers = (userDocs: UserDocument[]): User[] => {
@@ -48,10 +64,19 @@ const userDocsToUsers = (userDocs: UserDocument[]): User[] => {
 
 const userDocToUser = (userDoc: UserDocument): User => {
   const user: User = {
-    id: userDoc._id,
+    _id: userDoc._id,
     lastname: userDoc.lastname,
     firstname: userDoc.firstname,
     email: userDoc.email,
+    wishes: userDoc.wishes,
   };
   return user;
+};
+
+const userDocToWishes = (userDoc: UserDocument): Wishes => {
+  const wishes: Wishes = {
+    burial_cremation: userDoc.wishes?.burial_cremation,
+    burial_cremation_place: userDoc.wishes?.burial_cremation_place,
+  };
+  return wishes;
 };
