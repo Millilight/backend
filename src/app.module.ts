@@ -1,6 +1,6 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { DirectiveLocation, GraphQLDirective } from 'graphql';
 import { upperDirectiveTransformer } from './common/directives/upper-case.directive';
@@ -30,7 +30,13 @@ import { AuthModule } from './modules/auth/auth.module';
         ],
       },
     }),
-    MongooseModule.forRoot(config().database.mongodb.host),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('database.mongodb.uri')
+      }),
+      inject: [ConfigService],
+    }),
     AuthModule,
     UsersModule,
   ],
