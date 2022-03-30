@@ -1,23 +1,34 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "tsconfig.json",
-    "sourceType": "module"
-  },
-  "plugins": ["@typescript-eslint/eslint-plugin"],
   "extends": [
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "eslint:recommended",
+    "prettier" // Add "prettier" last. This will turn off eslint rules conflicting with prettier. This is not what will format our code.
   ],
-  "root": true,
-  "env": {
-    "node": true,
-    "jest": true
-  },
-  "rules": {
-    "@typescript-eslint/interface-name-prefix": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "off"
-  }
+  //"plugins": ["testing-library"], TODO DELETE plugin
+
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"], // TypeScript files extension
+
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking", // if project is lighweight, else only in ci/cd
+        "prettier" // Add "prettier" last. This will turn off eslint rules conflicting with prettier. This is not what will format our code.
+      ],
+
+      "parserOptions": {
+        "project": ["./tsconfig.json"], // Specify it only for TypeScript files
+        "tsconfigRootDir": "./"
+      },
+
+      "plugins": ["@typescript-eslint"],
+      "parser": "@typescript-eslint/parser",
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "error"
+        //"react/display-name": [0, { "ignoreTranspilerName": true }]
+        //jest ?
+      }
+    }
+  ]
 }

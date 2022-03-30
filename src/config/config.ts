@@ -6,7 +6,14 @@ export default () => ({
   },
   database: {
     mongodb: {
-      host: process.env.MONGODB_ADDON_URI || process.env.DATABASE_MONGODB_HOST || "mongodb://localhost/nest",
+      host:
+        process.env.MONGODB_ADDON_URI ||
+        process.env.DATABASE_MONGODB_HOST ||
+        "mongodb://localhost/nest",
     },
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET || "secretKey",
+    expiration: process.env.JWT_EXPIRATION || "30 days",
   },
 });

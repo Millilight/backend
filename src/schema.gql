@@ -5,21 +5,35 @@
 directive @upper on FIELD_DEFINITION
 
 input CreateUserDto {
-  age: Float!
   email: String!
-  name: String!
+  firstname: String!
+  lastname: String!
+  password: String!
+}
+
+type LoginResponse {
+  access_token: String!
+  user: User!
+}
+
+input LoginUserDto {
+  email: String!
+  password: String!
 }
 
 type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
+  login(loginUserDto: LoginUserDto!): LoginResponse!
 }
 
 type Query {
+  user: User!
   users: [User!]!
 }
 
 type User {
-  age: Float!
   email: String!
-  name: String!
+  firstname: String!
+  id: ID!
+  lastname: String!
 }
