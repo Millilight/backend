@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
@@ -7,7 +7,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from './users.decorator';
 import { Wishes } from './schemas/wishes.schema';
 import { UpdateWishesDto } from './dto/update-wishes.dto';
+import { MongoExceptionFilter } from '@/utils/exception.filter';
+
 @Resolver(() => User)
+@UseFilters(MongoExceptionFilter)
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
 
