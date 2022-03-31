@@ -16,6 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     // Here we can code more business logic about JWT (https://docs.nestjs.com/security/authentication#login-route)
-    return this.authService.getConnectedUser(payload.id);
+    return await this.authService.getConnectedUser(payload.id);
   }
 }
