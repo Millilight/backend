@@ -12,7 +12,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
-    return this.usersService.getWithAuth(email, password);
+    return await this.usersService.getWithAuth(email, password);
   }
 
   login(user: User): LoginResponse {
@@ -24,6 +24,6 @@ export class AuthService {
   }
 
   async getConnectedUser(user_id: string): Promise<User> {
-    return this.usersService.findByID(user_id);
+    return await this.usersService.findByID(user_id);
   }
 }

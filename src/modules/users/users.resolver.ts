@@ -18,7 +18,7 @@ export class UsersResolver {
   async createUser(
     @Args('createUserDto') createUserDto: CreateUserDto
   ): Promise<User> {
-    return this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto);
   }
 
   // TODO : if the vast majority of the operations are protected : https://docs.nestjs.com/security/authentication#login-route
@@ -34,7 +34,6 @@ export class UsersResolver {
     @CurrentUser() user: User,
     @Args('updateWishesDto') updateWishesDto: UpdateWishesDto
   ): Promise<Wishes> {
-    //TODO service updateUser
     return await this.usersService
       .updateUser(user, { wishes: updateWishesDto })
       .then((user) => user.wishes);
