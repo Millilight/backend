@@ -5,13 +5,10 @@ import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Wishes, WishesSchema } from './wishes.schema';
 
-export type UserDocument = UserDB & Document;
+export type UserDocument = User & Document;
 @Schema()
 @ObjectType()
-class UserBase {
-  // This class contains all the fiedls that are both in user db schema and user gql schema
-
-  @Prop({ type: MongooseSchema.Types.ObjectId })
+export class User {
   @Field(() => ID)
   _id?: string;
 
@@ -34,21 +31,12 @@ class UserBase {
   @Prop({ type: WishesSchema, ref: 'Wishes' })
   @Field(() => Wishes, { nullable: true })
   wishes?: Wishes;
-}
 
-@ObjectType()
-export class User extends UserBase {
-  // This call contains all the fields only available in the grapql schema
-}
-
-@Schema()
-export class UserDB extends UserBase {
-  // This call contains all the fields only available in the db schema
   @Prop({ required: true, select: false })
-  encrypted_password: string;
+  encrypted_password?: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(UserDB);
+export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre('save', function (next) {
   const user = this as UserDocument;

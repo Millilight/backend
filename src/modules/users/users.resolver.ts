@@ -29,9 +29,11 @@ export class UsersResolver {
   @UseGuards(JwtAuthGuard)
   async updateWishes(
     @CurrentUser() user: User,
-    @Args("updateWishesDto") updateWishesDto: UpdateWishesDto
+    @Args('updateWishesDto') updateWishesDto: UpdateWishesDto
   ): Promise<Wishes> {
     //TODO service updateUser
-    return this.usersService.updateWishes(user, updateWishesDto);
+    return await this.usersService
+      .updateUser(user, { wishes: updateWishesDto })
+      .then((user) => user.wishes);
   }
 }
