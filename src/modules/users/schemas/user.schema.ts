@@ -27,12 +27,12 @@ export class User {
   @Field(() => String)
   email: string;
 
-  @Prop({ type: WishesSchema, ref: 'Wishes' })
-  @Field(() => Wishes, { nullable: true })
-  wishes?: Wishes;
-
   @Prop({ required: true, select: false })
   password?: string;
+
+  @Prop({ type: WishesSchema, ref: 'Wishes', default: {} })
+  @Field(() => Wishes)
+  wishes: Wishes;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

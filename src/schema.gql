@@ -41,7 +41,7 @@ type User {
   email: String!
   firstname: String!
   lastname: String!
-  wishes: Wishes
+  wishes: Wishes!
 }
 
 type Wishes {
