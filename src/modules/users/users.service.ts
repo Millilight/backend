@@ -1,25 +1,24 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDB, UserDocument } from './schemas/user.schema';
+import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
-import { Wishes } from './schemas/wishes.schema';
-import { UpdateWishesDto } from './dto/update-wishes.dto';
+import convertToDotNotation from '@/utils/convertToDotNotation';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const userBD: UserDB = {
+    const userBD: User = {
       firstname: createUserDto.firstname,
       lastname: createUserDto.lastname,
       email: createUserDto.email,
       encrypted_password: createUserDto.password,
     };
-    const createdUser = new this.userModel(userBD);
-    return createdUser.save().then(userDocToUser);
+    return this.userModel.create(userBD);
+    //return createdUser.save().then();
     // throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
     // TODO Throw errors, intercept it and respond properly
   }
@@ -31,52 +30,26 @@ export class UsersService {
       .exec()
       .then((user) => {
         if (bcrypt.compareSync(password, user.encrypted_password)) {
-          return userDocToUser(user);
+          return user;
         } else return null;
       });
   }
 
   async findByID(user_id: string): Promise<User> {
-    return this.userModel.findOne({ _id: user_id }).exec().then(userDocToUser);
+    return this.userModel.findOne({ _id: user_id }).exec().then();
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec().then(userDocsToUsers);
+    return this.userModel.find().exec().then();
   }
 
-  async updateWishes(
-    user: User,
-    updateWishesDto: UpdateWishesDto
-  ): Promise<Wishes> {
+  async updateUser(user: User, user_update: any): Promise<User> {
     return this.userModel
       .findOneAndUpdate(
         { _id: user._id },
-        { wishes: updateWishesDto },
-        { new: true }
+        { $set: convertToDotNotation(user_update) },
+        { new: true, omitUndefined: true }
       )
-      .exec()
-      .then((userDoc) => userDocToWishes(userDoc));
+      .exec();
   }
 }
-const userDocsToUsers = (userDocs: UserDocument[]): User[] => {
-  return userDocs.map(userDocToUser);
-};
-
-const userDocToUser = (userDoc: UserDocument): User => {
-  const user: User = {
-    _id: userDoc._id,
-    lastname: userDoc.lastname,
-    firstname: userDoc.firstname,
-    email: userDoc.email,
-    wishes: userDoc.wishes,
-  };
-  return user;
-};
-
-const userDocToWishes = (userDoc: UserDocument): Wishes => {
-  const wishes: Wishes = {
-    burial_cremation: userDoc.wishes?.burial_cremation,
-    burial_cremation_place: userDoc.wishes?.burial_cremation_place,
-  };
-  return wishes;
-};
