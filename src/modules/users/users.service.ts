@@ -11,13 +11,7 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const userBD: User = {
-      firstname: createUserDto.firstname,
-      lastname: createUserDto.lastname,
-      email: createUserDto.email,
-      encrypted_password: createUserDto.password,
-    };
-    return this.userModel.create(userBD);
+    return this.userModel.create(createUserDto);
     //return createdUser.save().then();
     // throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
     // TODO Throw errors, intercept it and respond properly
@@ -26,10 +20,10 @@ export class UsersService {
   async getWithAuth(email: string, password: string): Promise<User> {
     return this.userModel
       .findOne({ email: email })
-      .select('+encrypted_password')
+      .select('+password')
       .exec()
       .then((user) => {
-        if (bcrypt.compareSync(password, user.encrypted_password)) {
+        if (bcrypt.compareSync(password, user.password)) {
           return user;
         } else return null;
       });

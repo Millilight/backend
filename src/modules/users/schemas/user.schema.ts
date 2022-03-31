@@ -1,6 +1,5 @@
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongooseSchema } from 'mongoose';
 import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Wishes, WishesSchema } from './wishes.schema';
@@ -33,7 +32,7 @@ export class User {
   wishes?: Wishes;
 
   @Prop({ required: true, select: false })
-  encrypted_password?: string;
+  password?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -46,12 +45,12 @@ UserSchema.pre('save', function (next) {
       if (saltError) {
         return next(saltError);
       } else {
-        bcrypt.hash(user.encrypted_password, salt, function (hashError, hash) {
+        bcrypt.hash(user.password, salt, function (hashError, hash) {
           if (hashError) {
             return next(hashError);
           }
 
-          user.encrypted_password = hash;
+          user.password = hash;
           next();
         });
       }
