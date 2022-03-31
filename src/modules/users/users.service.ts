@@ -1,20 +1,25 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import convertToDotNotation from '@/utils/convertToDotNotation';
+import { MongoError } from 'mongodb';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.userModel.create(createUserDto);
-    //return createdUser.save().then();
-    // throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
-    // TODO Throw errors, intercept it and respond properly
+    return this.userModel
+      .create(createUserDto)
+      .catch((exception: MongoError) => {
+        if (exception.code == 11000) {
+          throw new ConflictException('This email is already registered');
+        }
+        throw exception;
+      });
   }
 
   async getWithAuth(email: string, password: string): Promise<User> {
