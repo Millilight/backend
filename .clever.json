@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "app_id": "app_0461eac0-edb9-441e-88e5-622e5ed595a4",
+      "app_id": "app_c304d12e-58fd-4254-bbf6-8256ba3daa59",
       "org_id": "orga_ceb8f313-3681-4f58-ac13-d8a91bd7d744",
-      "deploy_url": "https://github.com/Millilight/backend.git",
+      "deploy_url": "https://push-n2-par-clevercloud-customers.services.clever-cloud.com/app_c304d12e-58fd-4254-bbf6-8256ba3daa59.git",
       "name": "FEE BACKEND STAGING",
       "alias": "FEE-BACKEND-STAGING"
     }

@@ -24,12 +24,19 @@ input LoginUserDto {
 type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
+  updateUser(updateUserDto: UpdateUserDto!): User!
   updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
   verifyEmail(verifyEmailDto: VerifyEmailDto!): VerifyEmailResponse!
 }
 
 type Query {
   user: User!
+}
+
+input UpdateUserDto {
+  firstname: String
+  lastname: String
+  password: String
 }
 
 input UpdateWishesDto {

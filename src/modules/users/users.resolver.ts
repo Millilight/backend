@@ -10,6 +10,7 @@ import { UpdateWishesDto } from './dto/update-wishes.dto';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
+import { UpdateUserDto } from './dto/update-user.dto copy';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
@@ -44,5 +45,14 @@ export class UsersResolver {
     return await this.usersService
       .updateUser(user, { wishes: updateWishesDto })
       .then((user) => user.wishes);
+  }
+
+  @Mutation(() => User)
+  @UseGuards(JwtAuthGuard)
+  async updateUser(
+    @CurrentUser() user: User,
+    @Args('updateUserDto') updateUserDto: UpdateUserDto
+  ): Promise<User> {
+    return await this.usersService.updateUser(user, updateUserDto);
   }
 }
