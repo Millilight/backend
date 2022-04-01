@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,6 +9,7 @@ import { MongoError } from 'mongodb';
 import { MailService } from '../mail/mail.service';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -71,7 +72,7 @@ export class UsersService {
 
         if (user.signup_mail_token !== verifyEmailDto.token) return {success : false};
 
-        if(user.mail_verified) throw new ConflictException('This mail has already been verified');
+        if(user.mail_verified) throw new NotFoundException('This mail has already been verified');
         
         user.mail_verified = true;
         
