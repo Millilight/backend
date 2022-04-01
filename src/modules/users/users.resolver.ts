@@ -20,7 +20,10 @@ import { UpdateEmailUserDto } from './dto/update-email-user.dto';
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
 export class UsersResolver {
-  constructor(private usersService: UsersService, private mailService: MailService) {}
+  constructor(
+    private usersService: UsersService,
+    private mailService: MailService
+  ) {}
 
   @Public()
   @Mutation(() => User)
