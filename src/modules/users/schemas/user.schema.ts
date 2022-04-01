@@ -35,10 +35,10 @@ export class User {
   password?: string;
 
   @Prop({ required: true, select: false })
-  signup_mail_token?: String;
+  signup_mail_token?: string;
 
   @Prop({ required: true, select: false, default: false })
-  mail_verified?: Boolean;
+  mail_verified?: boolean;
 
   @Prop({ required: true, select: false, default: new Date() })
   signup_date?: Date;

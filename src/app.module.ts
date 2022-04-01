@@ -36,7 +36,7 @@ import { upperDirectiveTransformer } from './common/directives/upper-case.direct
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('database.mongodb.uri')
+        uri: configService.get<string>('database.mongodb.uri'),
       }),
       inject: [ConfigService],
     }),
@@ -49,4 +49,3 @@ import { upperDirectiveTransformer } from './common/directives/upper-case.direct
   }]
 })
 export class AppModule {}
-
