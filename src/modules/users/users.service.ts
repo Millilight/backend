@@ -7,6 +7,8 @@ import * as bcrypt from 'bcrypt';
 import convertToDotNotation from '@/utils/convertToDotNotation';
 import { MongoError } from 'mongodb';
 import { MailService } from '../mail/mail.service';
+import { VerifyEmailDto } from '../auth/verify-email.dto';
+import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,5 +59,27 @@ export class UsersService {
         { new: true, omitUndefined: true }
       )
       .exec();
+  }
+
+  async verifyEmail(verifyEmailDto: VerifyEmailDto) : Promise<VerifyEmailResponse> {
+    return await this.userModel
+      .findOne({ _id: verifyEmailDto.user_id})
+      .select("signup_mail_token mail_verified")
+      .then((user) => {
+
+        if(!user) throw new Error("Unable to find user");
+
+        if (user.signup_mail_token !== verifyEmailDto.token) return {success : false};
+
+        if(user.mail_verified) throw new ConflictException('This mail has already been verified');
+        
+        user.mail_verified = true;
+        
+        user.save();
+        
+        return {
+          success: true
+        };
+    });
   }
 }
