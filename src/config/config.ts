@@ -2,6 +2,9 @@ export default () => ({
   app: {
     port: parseInt(process.env.APP_PORT, 10) || 3030,
   },
+  baseUrls: {
+    front: process.env.FRONT_URL || "https://app-d3b2a175-fbac-4d7f-9856-5d80eb33e84d.cleverapps.io",
+  },
   database: {
     mongodb: {
       uri:

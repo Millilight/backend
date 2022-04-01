@@ -1,4 +1,5 @@
 {
+  "sourceRoot": "src",
   "compilerOptions": {
     "plugins": [
       {
@@ -8,7 +9,7 @@
         }
       }
     ],
-    "assets": ["mail/templates/**/*"],
+    "assets": ["modules/mail/templates/**/*.hbs"],
     "watchAssets": true
   }
 }

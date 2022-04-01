@@ -30,6 +30,15 @@ export class User {
   @Prop({ required: true, select: false })
   password?: string;
 
+  @Prop({ required: true, select: false })
+  signup_mail_token?: String;
+
+  @Prop({ required: true, select: false, default: false })
+  mail_verified?: Boolean;
+
+  @Prop({ required: true, select: false, default: new Date() })
+  signup_date?: Date;
+
   @Prop({ type: WishesSchema, ref: 'Wishes', default: {} })
   @Field(() => Wishes)
   wishes: Wishes;
@@ -51,6 +60,7 @@ UserSchema.pre('save', function (next) {
           }
 
           user.password = hash;
+          
           next();
         });
       }

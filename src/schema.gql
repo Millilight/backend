@@ -25,6 +25,7 @@ type Mutation {
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
   updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
+  verifyEmail(verifyEmailDto: VerifyEmailDto!): VerifyEmailResponse!
 }
 
 type Query {
@@ -42,6 +43,15 @@ type User {
   firstname: String!
   lastname: String!
   wishes: Wishes!
+}
+
+input VerifyEmailDto {
+  token: String!
+  user_id: String!
+}
+
+type VerifyEmailResponse {
+  success: Boolean!
 }
 
 type Wishes {
