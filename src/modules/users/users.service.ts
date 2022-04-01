@@ -10,13 +10,14 @@ import { MailService } from '../mail/mail.service';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { NotFoundError } from 'rxjs';
+import generateToken from '@/utils/generateToken';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private mailService: MailService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const signup_mail_token = Math.floor(1000 + Math.random() * 90000000000000000000).toString();
+    const signup_mail_token = generateToken(32);
     
     const user = await this.userModel
       .create({...createUserDto, signup_mail_token: signup_mail_token})
@@ -68,11 +69,11 @@ export class UsersService {
       .select("signup_mail_token mail_verified")
       .then((user) => {
 
-        if(!user) throw new Error("Unable to find user");
+        if(!user) throw new NotFoundException("Unable to find user");
 
         if (user.signup_mail_token !== verifyEmailDto.token) return {success : false};
 
-        if(user.mail_verified) throw new NotFoundException('This mail has already been verified');
+        if(user.mail_verified) throw new ConflictException('This mail has already been verified');
         
         user.mail_verified = true;
         
