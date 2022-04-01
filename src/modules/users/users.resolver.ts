@@ -9,6 +9,8 @@ import { Wishes } from './schemas/wishes.schema';
 import { UpdateWishesDto } from './dto/update-wishes.dto';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { UpdateUserDto } from './dto/update-user.dto copy';
+import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
+import { VerifyEmailDto } from '../auth/verify-email.dto';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
@@ -20,6 +22,11 @@ export class UsersResolver {
     @Args('createUserDto') createUserDto: CreateUserDto
   ): Promise<User> {
     return await this.usersService.create(createUserDto);
+  }
+
+  @Mutation(() => VerifyEmailResponse)
+  verifyEmail(@Args('verifyEmailDto') verifyEmailDto: VerifyEmailDto) {
+    return this.usersService.verifyEmail(verifyEmailDto);
   }
 
   // TODO : if the vast majority of the operations are protected : https://docs.nestjs.com/security/authentication#login-route
