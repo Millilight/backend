@@ -6,20 +6,27 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import convertToDotNotation from '@/utils/convertToDotNotation';
 import { MongoError } from 'mongodb';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private mailService: MailService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userModel
-      .create(createUserDto)
+    const signup_mail_token = Math.floor(1000 + Math.random() * 90000000000000000000).toString();
+    
+    const user = await this.userModel
+      .create({...createUserDto, signup_mail_token: signup_mail_token})
       .catch((exception: MongoError) => {
         if (exception.code == 11000) {
           throw new ConflictException('This email is already registered');
         }
         throw exception;
       });
+      
+      await this.mailService.sendUserConfirmation(user, signup_mail_token);
+      
+      return user;
   }
 
   async getWithAuth(email: string, password: string): Promise<User> {
