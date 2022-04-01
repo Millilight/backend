@@ -37,6 +37,28 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
+UserSchema.pre('findOneAndUpdate', function (next) {
+  const user = this as any;
+
+  if (user._update.$set.password == null) {
+    return next();
+  }
+
+  bcrypt.genSalt(10, function (saltError, salt) {
+    if (saltError) {
+      return next(saltError);
+    } else {
+      bcrypt.hash(user._update.$set.password, salt, function (hashError, hash) {
+        if (hashError) {
+          return next(hashError);
+        }
+        user._update.$set.password = hash;
+        next();
+      });
+    }
+  });
+});
+
 UserSchema.pre('save', function (next) {
   const user = this as UserDocument;
 
