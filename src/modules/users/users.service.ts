@@ -11,6 +11,7 @@ import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { NotFoundError } from 'rxjs';
 import generateToken from '@/utils/generateToken';
+import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,11 +47,11 @@ export class UsersService {
   }
 
   async findByID(user_id: string): Promise<User> {
-    return await this.userModel.findOne({ _id: user_id }).exec().then();
+    return await this.userModel.findOne({ _id: user_id }).exec();
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec().then();
+    return await this.userModel.find().exec();
   }
 
   async updateUser(user: User, user_update: any): Promise<User> {
@@ -83,5 +84,15 @@ export class UsersService {
           success: true
         };
     });
+  }
+
+  async askResetPassword(askResetPasswordUserDto: AskResetPasswordUserDto) : Promise<User> {
+    return await this.userModel
+      .findOneAndUpdate({ email : askResetPasswordUserDto.email}, { reset_password_token: generateToken(32)}, {new: true, omitUndefined: true})
+      .select("+reset_password_token -wishes")
+      .exec()
+      .catch((exception: MongoError) => {
+        throw exception;
+      });
   }
 }

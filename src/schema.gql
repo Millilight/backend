@@ -4,6 +4,15 @@
 
 directive @upper on FIELD_DEFINITION
 
+input AskResetPasswordUserDto {
+  email: String!
+}
+
+type AskResetPasswordUserResponse {
+  details: String!
+  success: Boolean!
+}
+
 input CreateUserDto {
   email: String!
   firstname: String!
@@ -22,6 +31,7 @@ input LoginUserDto {
 }
 
 type Mutation {
+  askResetPasswordUser(askResetPasswordUserDto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
   updateUser(updateUserDto: UpdateUserDto!): User!
