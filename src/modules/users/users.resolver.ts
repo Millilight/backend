@@ -11,12 +11,14 @@ import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { UpdateUserDto } from './dto/update-user.dto copy';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
+import { Public } from '../auth/public.decorator';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
 
+  @Public()
   @Mutation(() => User)
   async createUser(
     @Args('createUserDto') createUserDto: CreateUserDto
@@ -24,20 +26,19 @@ export class UsersResolver {
     return await this.usersService.create(createUserDto);
   }
 
+  @Public()
   @Mutation(() => VerifyEmailResponse)
   verifyEmail(@Args('verifyEmailDto') verifyEmailDto: VerifyEmailDto) {
     return this.usersService.verifyEmail(verifyEmailDto);
   }
 
-  // TODO : if the vast majority of the operations are protected : https://docs.nestjs.com/security/authentication#login-route
+  // Remember that we use JWTAuthGuard by default so as to protect operations
   @Query(() => User)
-  @UseGuards(JwtAuthGuard)
   user(@CurrentUser() user: User): User {
     return user;
   }
 
   @Mutation(() => Wishes)
-  @UseGuards(JwtAuthGuard)
   async updateWishes(
     @CurrentUser() user: User,
     @Args('updateWishesDto') updateWishesDto: UpdateWishesDto
@@ -48,7 +49,6 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  @UseGuards(JwtAuthGuard)
   async updateUser(
     @CurrentUser() user: User,
     @Args('updateUserDto') updateUserDto: UpdateUserDto
