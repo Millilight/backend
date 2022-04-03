@@ -1,13 +1,16 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GraphQLModule } from '@nestjs/graphql';
 import { DirectiveLocation, GraphQLDirective } from 'graphql';
-import { upperDirectiveTransformer } from './common/directives/upper-case.directive';
-import { UsersModule } from './modules/users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import config from './config/config';
+
+import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './modules/users/users.module';
+import config from './config/config';
+import { upperDirectiveTransformer } from './common/directives/upper-case.directive';
 
 @Module({
   imports: [
@@ -40,6 +43,10 @@ import { AuthModule } from './modules/auth/auth.module';
     AuthModule,
     UsersModule,
   ],
+  providers: [{
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard
+  }]
 })
 export class AppModule {}
 
