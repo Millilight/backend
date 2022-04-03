@@ -18,7 +18,7 @@ import { join } from 'path';
                 },
             },
             defaults: {
-                from: `L'équipe de <support@${configService.get<string>('product_name')}.fr>`,
+                from: `L'équipe de ${configService.get<string>('product_name')} <support@${configService.get<string>('product_name')}.fr>`,
             },
             template: {
                 dir: join(__dirname, 'templates'),

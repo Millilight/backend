@@ -12,11 +12,14 @@ import { UpdateUserDto } from './dto/update-user.dto copy';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { Public } from '../auth/public.decorator';
+import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
+import { MailService } from '../mail/mail.service';
+import { AskResetPasswordUserResponse } from './dto/ask-reset-password-user-response.dto';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
 export class UsersResolver {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService, private mailService: MailService) {}
 
   @Public()
   @Mutation(() => User)
@@ -54,5 +57,18 @@ export class UsersResolver {
     @Args('updateUserDto') updateUserDto: UpdateUserDto
   ): Promise<User> {
     return await this.usersService.updateUser(user, updateUserDto);
+  }
+
+  @Mutation(() => AskResetPasswordUserResponse)
+  async askResetPasswordUser(
+    @Args('askResetPasswordUserDto') askResetPasswordUserDto: AskResetPasswordUserDto
+  ): Promise<AskResetPasswordUserResponse> {
+    const user = await this.usersService.askResetPassword(askResetPasswordUserDto);
+    
+    if(!user) return { success: false, details: "No user found" };
+
+    await this.mailService.resetPasswordEmail(user);
+    
+    return { success: true };
   }
 }

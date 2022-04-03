@@ -1,8 +1,10 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Wishes, WishesSchema } from './wishes.schema';
+
+import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 @Schema()
@@ -39,6 +41,9 @@ export class User {
   @Prop({ required: true, select: false, default: new Date() })
   signup_date?: Date;
 
+  @Prop({ select: false })
+  reset_password_token?: String;
+
   @Prop({ type: WishesSchema, ref: 'Wishes', default: {} })
   @Field(() => Wishes)
   wishes: Wishes;
@@ -49,7 +54,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.pre('findOneAndUpdate', function (next) {
   const user = this as any;
 
-  if (user._update.$set.password == null) {
+  if (user._update.$set == undefined || user._update.$set.password == null) {
     return next();
   }
 
