@@ -8,16 +8,20 @@ export class MailService {
   constructor(private mailerService: MailerService, private configService : ConfigService) {}
 
   async sendUserConfirmation(user: User, token: string) {
-    const url = `${this.configService.get<string>('baseUrls.front')}/auth/confirmation?token=${token}&user_id=${user._id}`;
+    const url = `${this.configService.get<string>('base_urls.front')}/auth/confirmation?token=${token}&user_id=${user._id}`;
 
     await this.mailerService.sendMail({
       to: user.email,
       // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Welcome to Nice App! Confirm your Email',
+      subject: `Bienvenue sur ${this.configService.get<string>('product_name')}, confirmez votre email`,
       template: __dirname + '/confirmation', // `.hbs` extension is appended automatically
       context: { // filling curly brackets with content
-        name: user.firstname,
+        firstname: user.firstname,
         url,
+        email: user.email,
+        product_name: this.configService.get<string>('product_name'),
+        home_url: this.configService.get<string>('base_urls.home'),
+        front_url: this.configService.get<string>('base_urls.front')
       },
     });
   }
