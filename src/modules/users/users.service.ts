@@ -95,4 +95,14 @@ export class UsersService {
         throw exception;
       });
   }
+
+  async checkResetPassword(user_id: string, token : string) : Promise<User> {
+    return await this.userModel
+      .findOne({ _id : user_id, reset_password_token: token})
+      .select("-wishes")
+      .exec()
+      .catch((exception: MongoError) => {
+        throw exception;
+      });
+  }
 }

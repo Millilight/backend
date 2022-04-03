@@ -9,7 +9,6 @@ input AskResetPasswordUserDto {
 }
 
 type AskResetPasswordUserResponse {
-  details: String!
   success: Boolean!
 }
 
@@ -34,12 +33,23 @@ type Mutation {
   askResetPasswordUser(askResetPasswordUserDto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
+  resetPasswordUser(resetPasswordUserDto: ResetPasswordUserDto!): ResetPasswordUserResponse!
   updateUser(updateUserDto: UpdateUserDto!): User!
   updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
   verifyEmail(verifyEmailDto: VerifyEmailDto!): VerifyEmailResponse!
 }
 
 type Query {
+  user: User!
+}
+
+input ResetPasswordUserDto {
+  new_password: String!
+  token: String!
+  user_id: String!
+}
+
+type ResetPasswordUserResponse {
   user: User!
 }
 

@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { UseFilters, UseGuards } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UseFilters, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
@@ -15,6 +15,8 @@ import { Public } from '../auth/public.decorator';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { MailService } from '../mail/mail.service';
 import { AskResetPasswordUserResponse } from './dto/ask-reset-password-user-response.dto';
+import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
+import { ResetPasswordUserResponse } from './dto/reset-password-user-response';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
@@ -65,10 +67,25 @@ export class UsersResolver {
   ): Promise<AskResetPasswordUserResponse> {
     const user = await this.usersService.askResetPassword(askResetPasswordUserDto);
     
-    if(!user) return { success: false, details: "No user found" };
+    if(!user) throw new NotFoundException("The user could not be found.");
 
     await this.mailService.resetPasswordEmail(user);
     
     return { success: true };
+  }
+
+  @Mutation(() => ResetPasswordUserResponse)
+  async resetPasswordUser(
+    @Args('resetPasswordUserDto') resetPasswordUserDto: ResetPasswordUserDto
+  ): Promise<ResetPasswordUserResponse> {
+    let user = await this.usersService.checkResetPassword(resetPasswordUserDto.user_id, resetPasswordUserDto.token); // To be sure the user asked for a password change
+    
+    if(!user) throw new NotFoundException("The user did not ask for a password change or he could not be found.");
+
+    user = await this.usersService.updateUser(user, {password: resetPasswordUserDto.new_password});
+    
+    if(!user) throw new InternalServerErrorException("The password could not be updated.");
+    
+    return { user: user };
   }
 }

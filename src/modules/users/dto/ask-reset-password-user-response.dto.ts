@@ -4,7 +4,4 @@ import { Field, ObjectType } from '@nestjs/graphql';
 export class AskResetPasswordUserResponse {
   @Field(() => Boolean)
   success: Boolean;
-
-  @Field(() => String)
-  details?: String;
 }
