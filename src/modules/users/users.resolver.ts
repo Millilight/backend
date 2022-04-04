@@ -25,9 +25,9 @@ export class UsersResolver {
   @Public()
   @Mutation(() => User)
   async createUser(
-    @Args('createUserDto') createUserDto: CreateUserDto
+    @Args('create_user_dto') create_user_dto: CreateUserDto
   ): Promise<User> {
-    const user = await this.usersService.create(createUserDto);
+    const user = await this.usersService.create(create_user_dto);
 
     await this.mailService.sendUserConfirmation(user);
 
@@ -36,8 +36,8 @@ export class UsersResolver {
 
   @Public()
   @Mutation(() => VerifyEmailResponse)
-  verifyEmail(@Args('verifyEmailDto') verifyEmailDto: VerifyEmailDto) {
-    return this.usersService.verifyEmail(verifyEmailDto);
+  verifyEmail(@Args('verify_email_dto') verify_email_dto: VerifyEmailDto) {
+    return this.usersService.verifyEmail(verify_email_dto);
   }
 
   // Remember that we use JWTAuthGuard by default so as to protect operations
@@ -49,21 +49,21 @@ export class UsersResolver {
   @Mutation(() => Wishes)
   async updateWishes(
     @CurrentUser() user: User,
-    @Args('updateWishesDto') updateWishesDto: UpdateWishesDto
+    @Args('update_wishes_dto') update_wishes_dto: UpdateWishesDto
   ): Promise<Wishes> {
     return await this.usersService
-      .updateUser(user, { wishes: updateWishesDto })
+      .updateUser(user, { wishes: update_wishes_dto })
       .then((user) => user.wishes);
   }
 
   @Mutation(() => User)
   async updateUser(
     @CurrentUser() user: User,
-    @Args('updateUserDto') updateUserDto: UpdateUserDto
+    @Args('update_user_dto') update_user_dto: UpdateUserDto
   ): Promise<User> {
-    let new_user = await this.usersService.updateUser(user, updateUserDto);
+    let new_user = await this.usersService.updateUser(user, update_user_dto);
 
-    if(updateUserDto.new_email) {
+    if(update_user_dto.new_email) {
       new_user = await this.usersService.findByIDWithNewEmailAndNewEmailToken(new_user._id);
       await this.mailService.sendUserEmailUpdate(new_user);
     }
@@ -74,9 +74,9 @@ export class UsersResolver {
   @Public()
   @Mutation(() => AskResetPasswordUserResponse)
   async askResetPasswordUser(
-    @Args('askResetPasswordUserDto') askResetPasswordUserDto: AskResetPasswordUserDto
+    @Args('ask_reset_password_user_dto') ask_reset_password_user_dto: AskResetPasswordUserDto
   ): Promise<AskResetPasswordUserResponse> {
-    const user = await this.usersService.askResetPassword(askResetPasswordUserDto);
+    const user = await this.usersService.askResetPassword(ask_reset_password_user_dto);
 
     await this.mailService.resetPassword(user);
     
@@ -86,20 +86,20 @@ export class UsersResolver {
   @Public()
   @Mutation(() => User)
   async resetPasswordUser(
-    @Args('resetPasswordUserDto') resetPasswordUserDto: ResetPasswordUserDto
+    @Args('reset_password_user_dto') reset_password_user_dto: ResetPasswordUserDto
   ): Promise<User> {
-    let user = await this.usersService.checkResetPassword(resetPasswordUserDto.user_id, resetPasswordUserDto.token); // To be sure the user asked for a password change
+    let user = await this.usersService.checkResetPassword(reset_password_user_dto.user_id, reset_password_user_dto.token); // To be sure the user asked for a password change
 
-    return await this.usersService.updateUser(user, {password: resetPasswordUserDto.new_password});
+    return await this.usersService.updateUser(user, {password: reset_password_user_dto.new_password});
   }
 
   // The user needs to ask before (see updateUser mutation)
   @Public()
   @Mutation(() => User)
   async updateEmailUser(
-    @Args('updateEmailUserDto') updateEmailUserDto: UpdateEmailUserDto
+    @Args('update_email_user_dto') update_email_user_dto: UpdateEmailUserDto
   ): Promise<User> {
-    let user = await this.usersService.findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(updateEmailUserDto.user_id, updateEmailUserDto.token); // To be sure the user asked for an email change
+    let user = await this.usersService.findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(update_email_user_dto.user_id, update_email_user_dto.token); // To be sure the user asked for an email change
     
     return await this.usersService.updateEmailUser(user);
   }

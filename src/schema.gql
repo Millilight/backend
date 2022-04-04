@@ -30,14 +30,14 @@ input LoginUserDto {
 }
 
 type Mutation {
-  askResetPasswordUser(askResetPasswordUserDto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
-  createUser(createUserDto: CreateUserDto!): User!
-  login(loginUserDto: LoginUserDto!): LoginResponse!
-  resetPasswordUser(resetPasswordUserDto: ResetPasswordUserDto!): User!
-  updateEmailUser(updateEmailUserDto: UpdateEmailUserDto!): User!
-  updateUser(updateUserDto: UpdateUserDto!): User!
-  updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
-  verifyEmail(verifyEmailDto: VerifyEmailDto!): VerifyEmailResponse!
+  askResetPasswordUser(ask_reset_password_user_dto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
+  createUser(create_user_dto: CreateUserDto!): User!
+  login(login_user_dto: LoginUserDto!): LoginResponse!
+  resetPasswordUser(reset_password_user_dto: ResetPasswordUserDto!): User!
+  updateEmailUser(update_email_user_dto: UpdateEmailUserDto!): User!
+  updateUser(update_user_dto: UpdateUserDto!): User!
+  updateWishes(update_wishes_dto: UpdateWishesDto!): Wishes!
+  verifyEmail(verify_email_dto: VerifyEmailDto!): VerifyEmailResponse!
 }
 
 type Query {
