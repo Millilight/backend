@@ -39,9 +39,8 @@ export class UsersService {
       .select('+password')
       .exec()
       .then((user) => {
-        if (bcrypt.compareSync(password, user.password)) {
-          return user;
-        } else return null;
+        if (bcrypt.compareSync(password, user.password)) return user;
+        else return null;
       });
   }
 
