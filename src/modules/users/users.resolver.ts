@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { InternalServerErrorException, NotFoundException, UseFilters, UseGuards } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
@@ -66,8 +66,6 @@ export class UsersResolver {
     @Args('askResetPasswordUserDto') askResetPasswordUserDto: AskResetPasswordUserDto
   ): Promise<AskResetPasswordUserResponse> {
     const user = await this.usersService.askResetPassword(askResetPasswordUserDto);
-    
-    if(!user) throw new NotFoundException("The user could not be found.");
 
     await this.mailService.resetPasswordEmail(user);
     
@@ -79,12 +77,8 @@ export class UsersResolver {
     @Args('resetPasswordUserDto') resetPasswordUserDto: ResetPasswordUserDto
   ): Promise<ResetPasswordUserResponse> {
     let user = await this.usersService.checkResetPassword(resetPasswordUserDto.user_id, resetPasswordUserDto.token); // To be sure the user asked for a password change
-    
-    if(!user) throw new NotFoundException("The user did not ask for a password change or he could not be found.");
 
     user = await this.usersService.updateUser(user, {password: resetPasswordUserDto.new_password});
-    
-    if(!user) throw new InternalServerErrorException("The password could not be updated.");
     
     return { user: user };
   }
