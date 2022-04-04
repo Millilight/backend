@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,7 +9,6 @@ import { MongoError } from 'mongodb';
 import { MailService } from '../mail/mail.service';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
-import { NotFoundError } from 'rxjs';
 import generateToken from '@/utils/generateToken';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 
@@ -61,7 +60,12 @@ export class UsersService {
         { $set: convertToDotNotation(user_update) },
         { new: true, omitUndefined: true }
       )
-      .exec();
+      .exec()
+      .then((user) => {
+        if(!user) throw new InternalServerErrorException("The user could not be updated.");
+
+        return user;
+      });
   }
 
   async verifyEmail(verifyEmailDto: VerifyEmailDto) : Promise<VerifyEmailResponse> {
@@ -91,8 +95,9 @@ export class UsersService {
       .findOneAndUpdate({ email : askResetPasswordUserDto.email}, { reset_password_token: generateToken(32)}, {new: true, omitUndefined: true})
       .select("+reset_password_token -wishes")
       .exec()
-      .catch((exception: MongoError) => {
-        throw exception;
+      .then((user: User) => {
+        if(!user) throw new NotFoundException("The user could not be found.");
+        return user;
       });
   }
 
@@ -101,8 +106,9 @@ export class UsersService {
       .findOne({ _id : user_id, reset_password_token: token})
       .select("-wishes")
       .exec()
-      .catch((exception: MongoError) => {
-        throw exception;
+      .then((user) => {
+        if(!user) throw new NotFoundException("The user did not ask for a password change or he could not be found.");
+        return user;
       });
   }
 }
