@@ -62,6 +62,7 @@ input UpdateUserDto {
 input UpdateWishesDto {
   burial_cremation: String
   burial_cremation_place: String
+  music: String
 }
 
 type User {
@@ -84,4 +85,5 @@ type VerifyEmailResponse {
 type Wishes {
   burial_cremation: String
   burial_cremation_place: String
+  music: String
 }
