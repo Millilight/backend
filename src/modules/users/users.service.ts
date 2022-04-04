@@ -16,11 +16,11 @@ import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private mailService: MailService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(create_user_dto: CreateUserDto): Promise<User> {
     const signup_mail_token = generateToken(32);
     
     return await this.userModel
-      .create({...createUserDto, signup_mail_token: signup_mail_token})
+      .create({...create_user_dto, signup_mail_token: signup_mail_token})
       .then((user) => {
         user.signup_mail_token = signup_mail_token;
         return user;
@@ -95,15 +95,15 @@ export class UsersService {
       });
   }
 
-  async verifyEmail(verifyEmailDto: VerifyEmailDto) : Promise<VerifyEmailResponse> {
+  async verifyEmail(verify_email_dto: VerifyEmailDto) : Promise<VerifyEmailResponse> {
     return await this.userModel
-      .findOne({ _id: verifyEmailDto.user_id})
+      .findOne({ _id: verify_email_dto.user_id})
       .select("signup_mail_token mail_verified")
       .then((user) => {
 
         if(!user) throw new NotFoundException("Unable to find user");
 
-        if (user.signup_mail_token !== verifyEmailDto.token) return {success : false};
+        if (user.signup_mail_token !== verify_email_dto.token) return {success : false};
 
         if(user.mail_verified) throw new ConflictException('This mail has already been verified');
         
@@ -117,9 +117,9 @@ export class UsersService {
     });
   }
 
-  async askResetPassword(askResetPasswordUserDto: AskResetPasswordUserDto) : Promise<User> {
+  async askResetPassword(ask_reset_password_user_dto: AskResetPasswordUserDto) : Promise<User> {
     return await this.userModel
-      .findOneAndUpdate({ email : askResetPasswordUserDto.email}, { reset_password_token: generateToken(32)}, {new: true, omitUndefined: true})
+      .findOneAndUpdate({ email : ask_reset_password_user_dto.email}, { reset_password_token: generateToken(32)}, {new: true, omitUndefined: true})
       .select("+reset_password_token -wishes")
       .exec()
       .then((user: User) => {
