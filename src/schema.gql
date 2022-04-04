@@ -33,7 +33,8 @@ type Mutation {
   askResetPasswordUser(askResetPasswordUserDto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
   createUser(createUserDto: CreateUserDto!): User!
   login(loginUserDto: LoginUserDto!): LoginResponse!
-  resetPasswordUser(resetPasswordUserDto: ResetPasswordUserDto!): ResetPasswordUserResponse!
+  resetPasswordUser(resetPasswordUserDto: ResetPasswordUserDto!): User!
+  updateEmailUser(updateEmailUserDto: UpdateEmailUserDto!): User!
   updateUser(updateUserDto: UpdateUserDto!): User!
   updateWishes(updateWishesDto: UpdateWishesDto!): Wishes!
   verifyEmail(verifyEmailDto: VerifyEmailDto!): VerifyEmailResponse!
@@ -49,13 +50,15 @@ input ResetPasswordUserDto {
   user_id: String!
 }
 
-type ResetPasswordUserResponse {
-  user: User!
+input UpdateEmailUserDto {
+  token: String!
+  user_id: String!
 }
 
 input UpdateUserDto {
   firstname: String
   lastname: String
+  new_email: String
   password: String
 }
 

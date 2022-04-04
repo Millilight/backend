@@ -49,6 +49,18 @@ export class UsersService {
     return await this.userModel.findOne({ _id: user_id }).exec();
   }
 
+  async findByIDWithNewEmailAndNewEmailToken(user_id: string): Promise<User> {
+    return await this.userModel.findOne({ _id: user_id })
+    .select("+new_email +new_email_token")
+    .exec();
+  }
+
+  async findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(user_id: string, token: string): Promise<User> {
+    return await this.userModel.findOne({ _id: user_id, new_email_token: token })
+    .select("+new_email +new_email_token")
+    .exec();
+  }
+
   async findAll(): Promise<User[]> {
     return await this.userModel.find().exec();
   }
@@ -58,6 +70,21 @@ export class UsersService {
       .findOneAndUpdate(
         { _id: user._id },
         { $set: convertToDotNotation(user_update) },
+        { new: true, omitUndefined: true }
+      )
+      .exec()
+      .then((user) => {
+        if(!user) throw new InternalServerErrorException("The user could not be updated.");
+
+        return user;
+      });
+  }
+
+  async updateEmailUser(user: User): Promise<User> {
+    return await this.userModel
+      .findOneAndUpdate(
+        { _id: user._id },
+        { $set: convertToDotNotation({email: user.new_email}), $unset: {new_email: "", new_email_token:"", new_email_token_verified:""} },
         { new: true, omitUndefined: true }
       )
       .exec()

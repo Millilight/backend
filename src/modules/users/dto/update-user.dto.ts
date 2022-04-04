@@ -10,4 +10,7 @@ export class UpdateUserDto {
 
   @Field(() => String, { nullable: true })
   password: string;
+
+  @Field(() => String, { nullable: true })
+  new_email: string;
 }

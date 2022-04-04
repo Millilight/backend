@@ -3,12 +3,11 @@ import { UseFilters, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from './users.decorator';
 import { Wishes } from './schemas/wishes.schema';
 import { UpdateWishesDto } from './dto/update-wishes.dto';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
-import { UpdateUserDto } from './dto/update-user.dto copy';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
 import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { Public } from '../auth/public.decorator';
@@ -16,7 +15,7 @@ import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { MailService } from '../mail/mail.service';
 import { AskResetPasswordUserResponse } from './dto/ask-reset-password-user-response.dto';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
-import { ResetPasswordUserResponse } from './dto/reset-password-user-response';
+import { UpdateEmailUserDto } from './dto/update-email-user.dto';
 
 @Resolver(() => User)
 @UseFilters(MongoExceptionFilter)
@@ -62,7 +61,14 @@ export class UsersResolver {
     @CurrentUser() user: User,
     @Args('updateUserDto') updateUserDto: UpdateUserDto
   ): Promise<User> {
-    return await this.usersService.updateUser(user, updateUserDto);
+    let new_user = await this.usersService.updateUser(user, updateUserDto);
+
+    if(updateUserDto.new_email) {
+      new_user = await this.usersService.findByIDWithNewEmailAndNewEmailToken(new_user._id);
+      await this.mailService.sendUserEmailUpdate(new_user);
+    }
+
+    return new_user;
   }
 
   @Mutation(() => AskResetPasswordUserResponse)
@@ -71,19 +77,28 @@ export class UsersResolver {
   ): Promise<AskResetPasswordUserResponse> {
     const user = await this.usersService.askResetPassword(askResetPasswordUserDto);
 
-    await this.mailService.resetPasswordEmail(user);
+    await this.mailService.resetPassword(user);
     
     return { success: true };
   }
 
-  @Mutation(() => ResetPasswordUserResponse)
+  @Mutation(() => User)
   async resetPasswordUser(
     @Args('resetPasswordUserDto') resetPasswordUserDto: ResetPasswordUserDto
-  ): Promise<ResetPasswordUserResponse> {
+  ): Promise<User> {
     let user = await this.usersService.checkResetPassword(resetPasswordUserDto.user_id, resetPasswordUserDto.token); // To be sure the user asked for a password change
 
-    user = await this.usersService.updateUser(user, {password: resetPasswordUserDto.new_password});
+    return await this.usersService.updateUser(user, {password: resetPasswordUserDto.new_password});
+  }
+
+  // The user needs to ask before (see updateUser mutation)
+  @Public()
+  @Mutation(() => User)
+  async updateEmailUser(
+    @Args('updateEmailUserDto') updateEmailUserDto: UpdateEmailUserDto
+  ): Promise<User> {
+    let user = await this.usersService.findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(updateEmailUserDto.user_id, updateEmailUserDto.token); // To be sure the user asked for an email change
     
-    return { user: user };
+    return await this.usersService.updateEmailUser(user);
   }
 }
