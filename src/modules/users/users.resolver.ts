@@ -28,7 +28,11 @@ export class UsersResolver {
   async createUser(
     @Args('createUserDto') createUserDto: CreateUserDto
   ): Promise<User> {
-    return await this.usersService.create(createUserDto);
+    const user = await this.usersService.create(createUserDto);
+
+    await this.mailService.sendUserConfirmation(user);
+
+    return user;
   }
 
   @Public()
