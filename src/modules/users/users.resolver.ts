@@ -71,6 +71,7 @@ export class UsersResolver {
     return new_user;
   }
 
+  @Public()
   @Mutation(() => AskResetPasswordUserResponse)
   async askResetPasswordUser(
     @Args('askResetPasswordUserDto') askResetPasswordUserDto: AskResetPasswordUserDto
@@ -82,6 +83,7 @@ export class UsersResolver {
     return { success: true };
   }
 
+  @Public()
   @Mutation(() => User)
   async resetPasswordUser(
     @Args('resetPasswordUserDto') resetPasswordUserDto: ResetPasswordUserDto
