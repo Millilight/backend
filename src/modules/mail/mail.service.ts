@@ -7,8 +7,8 @@ import { User } from '../users/schemas/user.schema';
 export class MailService {
   constructor(private mailerService: MailerService, private configService : ConfigService) {}
 
-  async sendUserConfirmation(user: User, token: string) {
-    const url = `${this.configService.get<string>('base_urls.front')}/auth/confirmation?token=${token}&user_id=${user._id}`;
+  async sendUserConfirmation(user: User) {
+    const url = `${this.configService.get<string>('base_urls.front')}/auth/confirmation?token=${user.signup_mail_token}&user_id=${user._id}`;
 
     await this.mailerService.sendMail({
       to: user.email,

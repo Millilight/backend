@@ -19,18 +19,18 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const signup_mail_token = generateToken(32);
     
-    const user = await this.userModel
+    return await this.userModel
       .create({...createUserDto, signup_mail_token: signup_mail_token})
+      .then((user) => {
+        user.signup_mail_token = signup_mail_token;
+        return user;
+      })
       .catch((exception: MongoError) => {
         if (exception.code == 11000) {
           throw new ConflictException('This email is already registered');
         }
         throw exception;
       });
-      
-      await this.mailService.sendUserConfirmation(user, signup_mail_token);
-      
-      return user;
   }
 
   async getWithAuth(email: string, password: string): Promise<User> {
