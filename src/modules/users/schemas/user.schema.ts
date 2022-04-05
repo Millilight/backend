@@ -65,31 +65,16 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.pre('findOneAndUpdate', function (next) {
   const user = this as any;
 
-  if (user._update.$set == undefined) {
-    return next();
-  }
+  if (user._update.$set == undefined) return next();
 
   if(user._update.$set.new_email != null){
     user._update.$set.new_email_token = generateToken(32);
     user._update.$set.new_email_token_verified = false;
-    next();
   }
 
-  if(user._update.$set.password != null){
-    bcrypt.genSalt(10, function (saltError, salt) {
-      if (saltError) {
-        return next(saltError);
-      } else {
-        bcrypt.hash(user._update.$set.password, salt, function (hashError, hash) {
-          if (hashError) {
-            return next(hashError);
-          }
-          user._update.$set.password = hash;
-          next();
-        });
-      }
-    });
-  }
+  if(user._update.$set.password != null)
+    user._update.$set.password = bcrypt.hashSync(user._update.$set.password, 10);
+
   next();
 });
 
@@ -97,22 +82,10 @@ UserSchema.pre('save', function (next) {
   const user = this as UserDocument;
 
   if (this.isModified('password') || this.isNew) {
-    bcrypt.genSalt(10, function (saltError, salt) {
-      if (saltError) {
-        return next(saltError);
-      } else {
-        bcrypt.hash(user.password, salt, function (hashError, hash) {
-          if (hashError) {
-            return next(hashError);
-          }
-
-          user.password = hash;
-          
-          next();
-        });
-      }
+    bcrypt.hash(user.password, 10, function(err, hash) {
+      if (err) return next(err);
+      user.password = hash;    
+      next();
     });
-  } else {
-    return next();
   }
 });
