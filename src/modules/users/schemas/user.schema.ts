@@ -81,11 +81,7 @@ UserSchema.pre('findOneAndUpdate', function (next) {
 UserSchema.pre('save', function (next) {
   const user = this as UserDocument;
 
-  if (this.isModified('password') || this.isNew) {
-    bcrypt.hash(user.password, 10, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;    
-      next();
-    });
-  }
+  if (this.isModified('password') || this.isNew)
+    user.password = bcrypt.hashSync(user.password, 10);
+  next();
 });
