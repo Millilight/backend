@@ -68,13 +68,15 @@ export class UsersService {
     return await this.userModel
       .findOneAndUpdate(
         { _id: user._id },
-        { $set: convertToDotNotation(user_update) },
+        {
+          $set: convertToDotNotation(user_update),
+          $unset: {reset_password_token: user_update.new_password ? "" : null}
+        },
         { new: true, omitUndefined: true }
       )
       .exec()
       .then((user) => {
         if(!user) throw new InternalServerErrorException("The user could not be updated.");
-
         return user;
       });
   }
@@ -83,13 +85,15 @@ export class UsersService {
     return await this.userModel
       .findOneAndUpdate(
         { _id: user._id },
-        { $set: convertToDotNotation({email: user.new_email}), $unset: {new_email: "", new_email_token:"", new_email_token_verified:""} },
+        { 
+          $set: convertToDotNotation({email: user.new_email}),
+          $unset: {new_email: "", new_email_token:"", new_email_token_verified:""}
+        },
         { new: true, omitUndefined: true }
       )
       .exec()
       .then((user) => {
         if(!user) throw new InternalServerErrorException("The user could not be updated.");
-
         return user;
       });
   }
