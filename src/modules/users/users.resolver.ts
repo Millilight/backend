@@ -1,109 +1,138 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { UseFilters, UseGuards } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UseFilters } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './schemas/user.schema';
+import {
+  AskResetPasswordUserDto,
+  AskResetPasswordUserResponse,
+  CreateUserDto,
+  ResetPasswordUserDto,
+  UpdateEmailUserDto,
+  UpdateUserDto,
+  UpdateWishesDto,
+  User,
+  VerifyEmailDto,
+  Wishes,
+} from '../../graphql';
 import { CurrentUser } from './users.decorator';
-import { Wishes } from './schemas/wishes.schema';
-import { UpdateWishesDto } from './dto/update-wishes.dto';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { VerifyEmailResponse } from '../auth/verify-email-response.dto';
-import { VerifyEmailDto } from '../auth/verify-email.dto';
 import { Public } from '../auth/public.decorator';
-import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { MailService } from '../mail/mail.service';
-import { AskResetPasswordUserResponse } from './dto/ask-reset-password-user-response.dto';
-import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
-import { UpdateEmailUserDto } from './dto/update-email-user.dto';
+import { ConfigService } from '@nestjs/config';
 
-@Resolver(() => User)
+@Resolver('User')
 @UseFilters(MongoExceptionFilter)
 export class UsersResolver {
   constructor(
     private usersService: UsersService,
-    private mailService: MailService
+    private mailService: MailService,
+    private configService: ConfigService
   ) {}
 
   @Public()
-  @Mutation(() => User)
+  @Mutation()
   async createUser(
     @Args('create_user_dto') create_user_dto: CreateUserDto
   ): Promise<User> {
     const user = await this.usersService.create(create_user_dto);
 
-    await this.mailService.sendUserConfirmation(user);
+    if (this.configService.get<string>('node_env') !== "DEVELOPMENT"){
+      const signup_mail_token = await this.usersService.getSignupMailToken(user._id);
+      await this.mailService.sendUserConfirmation(user, signup_mail_token);
+    }
 
-    return user;
+    return user as User;
   }
 
   @Public()
-  @Mutation(() => VerifyEmailResponse)
-  verifyEmail(@Args('verify_email_dto') verify_email_dto: VerifyEmailDto) {
-    return this.usersService.verifyEmail(verify_email_dto);
+  @Mutation()
+  async verifyEmail(
+    @Args('verify_email_dto') verify_email_dto: VerifyEmailDto
+  ) {
+    await this.usersService.verifyEmail(verify_email_dto);
+    return { success: true };
   }
 
   // Remember that we use JWTAuthGuard by default so as to protect operations
-  @Query(() => User)
+  @Query()
   user(@CurrentUser() user: User): User {
     return user;
   }
 
-  @Mutation(() => Wishes)
+  @Mutation()
   async updateWishes(
     @CurrentUser() user: User,
     @Args('update_wishes_dto') update_wishes_dto: UpdateWishesDto
   ): Promise<Wishes> {
     return await this.usersService
       .updateUser(user, { wishes: update_wishes_dto })
-      .then((user) => user.wishes);
+      .then((user) => user.urgent_data.wishes);
   }
 
-  @Mutation(() => User)
+  @Mutation()
   async updateUser(
     @CurrentUser() user: User,
     @Args('update_user_dto') update_user_dto: UpdateUserDto
   ): Promise<User> {
-    let new_user = await this.usersService.updateUser(user, update_user_dto);
+    const new_user = await this.usersService.updateUser(user, update_user_dto);
 
-    if(update_user_dto.new_email) {
-      new_user = await this.usersService.findByIDWithNewEmailAndNewEmailToken(new_user._id);
-      await this.mailService.sendUserEmailUpdate(new_user);
+    if (update_user_dto.new_email) { // TODO : revoir si optimisable
+      const new_email = await this.usersService.getNewEmail(
+        new_user._id
+      );
+      const new_email_token = await this.usersService.getNewEmailToken(new_user._id);
+      if (this.configService.get<string>('node_env') !== "DEVELOPMENT")
+        await this.mailService.sendUserEmailUpdate(new_user, new_email, new_email_token);
     }
 
     return new_user;
   }
 
   @Public()
-  @Mutation(() => AskResetPasswordUserResponse)
+  @Mutation()
   async askResetPasswordUser(
-    @Args('ask_reset_password_user_dto') ask_reset_password_user_dto: AskResetPasswordUserDto
+    @Args('ask_reset_password_user_dto')
+    ask_reset_password_user_dto: AskResetPasswordUserDto
   ): Promise<AskResetPasswordUserResponse> {
-    const user = await this.usersService.askResetPassword(ask_reset_password_user_dto);
+    const user = await this.usersService.askResetPassword(
+      ask_reset_password_user_dto
+    );
 
-    await this.mailService.resetPassword(user);
+    if (this.configService.get<string>('node_env') !== "DEVELOPMENT"){
+      const reset_password_token = await this.usersService.getResetPasswordToken(user._id);
+      await this.mailService.resetPassword(user, reset_password_token);
+    }
     
     return { success: true };
   }
 
   @Public()
-  @Mutation(() => User)
+  @Mutation()
   async resetPasswordUser(
-    @Args('reset_password_user_dto') reset_password_user_dto: ResetPasswordUserDto
+    @Args('reset_password_user_dto')
+    reset_password_user_dto: ResetPasswordUserDto
   ): Promise<User> {
-    let user = await this.usersService.checkResetPassword(reset_password_user_dto.user_id, reset_password_user_dto.token); // To be sure the user asked for a password change
+    const user = await this.usersService.checkResetPassword(
+      reset_password_user_dto.user_id,
+      reset_password_user_dto.token
+    ); // To be sure the user asked for a password change
 
-    return await this.usersService.updateUser(user, {password: reset_password_user_dto.new_password});
+    return (await this.usersService.updateUser(user, {
+      password: reset_password_user_dto.new_password,
+    }));
   }
 
   // The user needs to ask before (see updateUser mutation)
   @Public()
-  @Mutation(() => User)
+  @Mutation()
   async updateEmailUser(
     @Args('update_email_user_dto') update_email_user_dto: UpdateEmailUserDto
   ): Promise<User> {
-    let user = await this.usersService.findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(update_email_user_dto.user_id, update_email_user_dto.token); // To be sure the user asked for an email change
-    
+    const user =
+      await this.usersService.findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(
+        update_email_user_dto.user_id,
+        update_email_user_dto.token
+      ); // To be sure the user asked for an email change
+
     return await this.usersService.updateEmailUser(user);
   }
 }

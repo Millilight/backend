@@ -3,13 +3,13 @@ import * as dotenv from 'dotenv-flow';
 export default () => {
   dotenv.config({ silent: true });
   return {
-    node_env: process.env.APP_PORT,
+    node_env: process.env.NODE_ENV || 'development',
     app: {
       port: parseInt(process.env.APP_PORT, 10) || 3030,
     },
-    product_name: process.env.PRODUCT_NAME || "FEE",
+    product_name: process.env.PRODUCT_NAME || 'amuni',
     baseUrls: {
-      home: process.env.HOME_URL || "https://fee.fr",
+      home: process.env.HOME_URL || 'https://amuni.fr',
       front:
         process.env.FRONT_URL ||
         'https://app-d3b2a175-fbac-4d7f-9856-5d80eb33e84d.cleverapps.io',

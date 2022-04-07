@@ -13,7 +13,9 @@
     "incremental": true,
     "skipLibCheck": true,
     "paths": {
-      "@/utils/*": ["src/common/utils/*"]
+      "@/utils/*": ["src/common/utils/*"],
+      "@gqltypes": ["src/graphql"],
+      "@parsers": ["src/common/utils/parsers"],
     }
   },
   "include": ["src/**/*"]

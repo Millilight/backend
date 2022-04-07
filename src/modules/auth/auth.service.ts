@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponse } from './login-response.schema';
-import { User } from '../users/schemas/user.schema';
+import { User } from 'src/graphql';
 import { UsersService } from '../users/users.service';
 
 @Injectable()

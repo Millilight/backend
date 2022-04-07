@@ -1,17 +1,18 @@
-import { User, UserSchema } from "../../modules/users/schemas/user.schema";
-
+import { UserDB } from "../../modules/users/schemas/user.schema";
 import mongoose from "mongoose";
 
 export class Fixtures {
     async addUser() {
-        const user: User = {
+        const user: UserDB = {
             firstname: 'TestFirstname',
             lastname: "TestLastname",
             email: 'test@test.fr',
             password: 'Test1234@',
             signup_mail_token: 'JLmg8tfHXJOYcd7PMT6mSgNT9qczkyuh',
-            wishes: {}
+            wishes: {},
+            mail_verified: true,
+            signup_date: new Date() // TODO chose a date
         }
-        await mongoose.models.User.create(user);
+        await mongoose.models.UserDB.create(user);
     };
 }

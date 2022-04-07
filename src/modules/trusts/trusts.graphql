@@ -1,0 +1,98 @@
+enum StateTrust {
+  INVITATION_SENT
+  VALIDATED
+}
+
+type TrustedUser {
+  _id: ID!
+  user_details: UserDetails!
+  security_code: String
+  added_date: Date!
+  urgent_data_unlocked: Boolean!
+  urgent_data_unlocked_date: Date
+  state: StateTrust!
+}
+
+type LegatorUser {
+  _id: ID!
+  user_details: UserDetails!
+  added_date: Date!
+  urgent_data_unlocked: Boolean!
+  urgent_data_unlocked_date: Date
+  state: StateTrust!
+}
+
+type UserDetails {
+  email: String!
+  firstname: String!
+  lastname: String!
+}
+
+extend type User {
+  trusted_users: [TrustedUser!]!
+  legator_users: [LegatorUser!]!
+}
+
+input AddTrustedUserInput {
+  firstname: String!
+  lastname: String!
+  email: String!
+}
+
+type AddTrustedUserResponse {
+  trusted_user: TrustedUser!
+}
+
+input ConfirmSecurityCodeInput {
+  legator_user_id: ID!
+  security_code: String!
+}
+
+type ConfirmSecurityCodeResponse {
+  legator_user: LegatorUser!
+}
+
+input UnlockUrgentDataInput {
+  legator_user_id: ID!
+}
+
+type UnlockUrgentDataResponse {
+  urgent_data: UrgentData!
+}
+
+input UrgentDataInput {
+  legator_user_id: ID!
+}
+
+type UrgentDataResponse {
+  urgent_data: UrgentData!
+}
+
+input VerifyEmailWithInvitationInput {
+  user_id: ID!
+  token: String!
+  password: String!
+}
+
+type VerifyEmailWithInvitationResponse {
+  sucess: Boolean!
+}
+
+type Query {
+  urgentData(urgent_data_input: UrgentDataInput!): UrgentDataResponse!
+}
+
+type Mutation {
+  addTrustedUser(
+    add_trusted_user_input: AddTrustedUserInput!
+  ): AddTrustedUserResponse!
+  verifyEmailWithInvitation(
+    verify_email_with_invitation_input: VerifyEmailWithInvitationInput!
+  ): VerifyEmailWithInvitationResponse!
+  confirmSecurityCode(
+    confirm_security_code_input: ConfirmSecurityCodeInput!
+  ): ConfirmSecurityCodeResponse!
+  unlockUrgentData(
+    unlock_urgent_data_input: UnlockUrgentDataInput!
+  ): UnlockUrgentDataResponse!
+}

@@ -130,12 +130,13 @@ describe('UsersResolver', () => {
           email: 'test@test.fr',
           password: 'Test1234@',
         })
-        .then((user) => {
-          expect(user._id).toBeDefined();
-          expect(user.lastname).toEqual('TestLastname');
-          expect(user.firstname).toEqual('TestFirstname');
-          expect(user.email).toEqual('test@test.fr');
-          expect(user.wishes).toBeDefined();
+        .then((data) => {
+          expect(data._id).toBeDefined();
+          expect(data.lastname).toEqual('TestLastname');
+          expect(data.firstname).toEqual('TestFirstname');
+          expect(data.email).toEqual('test@test.fr');
+          expect(data.password).toMatch(/^\$2[ayb]\$.{56}$/);
+          expect(data.wishes).toBeDefined();
         });
     });
   });
@@ -184,11 +185,13 @@ describe('UsersResolver', () => {
         lastname: "changeTest",
         password: "changeTest1234@",
         new_email: "changetest@test.fr",
-      }).then((user) => {
-        expect(user._id).toEqual('624af86f5998c2fdfa851b16');
-        expect(user.firstname).toEqual('changeTest');
-        expect(user.lastname).toEqual('changeTest');
-        expect(user.email).toEqual('test@test.fr');
+      }).then((data) => {
+        expect(data._id).toEqual('624af86f5998c2fdfa851b16');
+        expect(data.firstname).toEqual('changeTest');
+        expect(data.lastname).toEqual('changeTest');
+        expect(data.email).toEqual('test@test.fr');
+        expect(data.new_email).toEqual('changetest@test.fr');
+        expect(data.new_email_token).toBeDefined();
       });
     });
   });

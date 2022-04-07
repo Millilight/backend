@@ -3,6 +3,8 @@ module.exports = {
   rootDir: '.',
   moduleNameMapper: {
     '@/utils/(.*)': '<rootDir>/src/common/utils/$1',
+    "@gqltypes": 'src/graphql',
+    "@parsers": 'src/common/utils/parsers'
   },
   testEnvironment: 'node',
   testMatch: ['<rootDir>/src/**/*spec.ts'],
@@ -16,6 +18,7 @@ module.exports = {
         ignoreCodes: ['TS151001'],
       },
       tsconfig: '<rootDir>/tsconfig.json',
+      
     },
   },
 };
