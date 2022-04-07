@@ -5,7 +5,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Wishes, WishesSchema } from './wishes.schema';
 
 import { Document } from 'mongoose';
-import { UnauthorizedException } from '@nestjs/common';
 import generateToken from '@/utils/generateToken';
 
 export type UserDocument = User & Document;
@@ -44,16 +43,16 @@ export class User {
   signup_date?: Date;
 
   @Prop({ select: false })
-  reset_password_token?: String;
+  reset_password_token?: string;
 
   @Prop({ select: false })
-  new_email?: String;
+  new_email?: string;
 
   @Prop({ select: false })
-  new_email_token?: String;
+  new_email_token?: string;
 
   @Prop({ select: false })
-  new_email_token_verified?: Boolean;
+  new_email_token_verified?: boolean;
 
   @Prop({ type: WishesSchema, ref: 'Wishes', default: {} })
   @Field(() => Wishes)
@@ -67,13 +66,16 @@ UserSchema.pre('findOneAndUpdate', function (next) {
 
   if (user._update.$set == undefined) return next();
 
-  if(user._update.$set.new_email != null){
+  if (user._update.$set.new_email != null) {
     user._update.$set.new_email_token = generateToken(32);
     user._update.$set.new_email_token_verified = false;
   }
 
-  if(user._update.$set.password != null)
-    user._update.$set.password = bcrypt.hashSync(user._update.$set.password, 10);
+  if (user._update.$set.password != null)
+    user._update.$set.password = bcrypt.hashSync(
+      user._update.$set.password,
+      10
+    );
 
   next();
 });
