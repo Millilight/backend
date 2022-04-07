@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from '../users/schemas/user.schema';
+
+import { User } from '../../graphql';
 
 @ObjectType()
 export class LoginResponse {

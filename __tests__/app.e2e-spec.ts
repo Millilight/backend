@@ -8,6 +8,8 @@ import { INestApplication } from '@nestjs/common';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
+// TODO : const { schema } = app.get(GraphQLSchemaHost);
+
 const { mock } = require('nodemailer');
 const mailServer = mock;
 

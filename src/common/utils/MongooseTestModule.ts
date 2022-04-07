@@ -1,5 +1,5 @@
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
-import { User, UserSchema } from '../../modules/users/schemas/user.schema';
+import { UserDB, UserDBSchema } from '../../modules/users/schemas/user.schema';
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
@@ -17,7 +17,7 @@ export class MongooseTestModule {
     this.server = await MongoMemoryServer.create();
     const uri = await this.server.getUri();
     await mongoose.connect(uri);
-    mongoose.model(User.name, UserSchema);
+    mongoose.model(UserDB.name, UserDBSchema);
 
     return MongooseModule.forRootAsync({
       useFactory: async () => {

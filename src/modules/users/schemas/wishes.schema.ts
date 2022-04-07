@@ -22,3 +22,9 @@ export class Wishes {
 }
 
 export const WishesSchema = SchemaFactory.createForClass(Wishes);
+
+@ObjectType()
+export class UrgentData {
+  @Field(() => Wishes)
+  wishes: Wishes;
+}

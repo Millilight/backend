@@ -1,9 +1,3 @@
-# ------------------------------------------------------
-# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
-# ------------------------------------------------------
-
-directive @upper on FIELD_DEFINITION
-
 input AskResetPasswordUserDto {
   email: String!
 }
@@ -30,7 +24,9 @@ input LoginUserDto {
 }
 
 type Mutation {
-  askResetPasswordUser(ask_reset_password_user_dto: AskResetPasswordUserDto!): AskResetPasswordUserResponse!
+  askResetPasswordUser(
+    ask_reset_password_user_dto: AskResetPasswordUserDto!
+  ): AskResetPasswordUserResponse!
   createUser(create_user_dto: CreateUserDto!): User!
   login(login_user_dto: LoginUserDto!): LoginResponse!
   resetPasswordUser(reset_password_user_dto: ResetPasswordUserDto!): User!
@@ -68,17 +64,22 @@ input UpdateWishesDto {
   music: String
 }
 
+type UrgentData {
+  wishes: Wishes!
+}
+
 type User {
   _id: ID!
   email: String!
   firstname: String!
   lastname: String!
-  wishes: Wishes!
+  urgent_data: UrgentData!
 }
 
 input VerifyEmailDto {
   token: String!
   user_id: String!
+  password: String
 }
 
 type VerifyEmailResponse {

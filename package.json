@@ -64,6 +64,7 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
+    "apollo-server-core": "^3.6.7",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
@@ -77,6 +78,7 @@
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
     "ts-loader": "^9.2.8",
+    "ts-morph": "^13.0.3",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.11.0",
     "typescript": "^4.4.2"

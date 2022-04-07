@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { User, UserSchema } from './schemas/user.schema';
 
 import { Fixtures } from '@/utils/fixtures';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -6,8 +7,6 @@ import {
   MongooseTestModule
 } from '@/utils/MongooseTestModule';
 import { NotFoundException } from '@nestjs/common';
-import { User } from '../../graphql';
-import { UserDBSchema } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
 describe('UserService', () => {
@@ -20,7 +19,7 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         await db.start(),
-        MongooseModule.forFeature([{ name: 'User', schema: UserDBSchema }]),
+        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
       ],
       providers: [UsersService],
     }).compile();
@@ -43,13 +42,13 @@ describe('UserService', () => {
           email: 'test@test.fr',
           password: 'Test1234@',
         })
-        .then((user) => {
-          expect(user._id).toBeDefined();
-          expect(user.lastname).toEqual('TestLastname');
-          expect(user.firstname).toEqual('TestFirstname');
-          expect(user.email).toEqual('test@test.fr');
-          //expect(user.password).toMatch(/^\$2[ayb]\$.{56}$/);
-          expect(user.wishes).toBeDefined();
+        .then((data) => {
+          expect(data._id).toBeDefined();
+          expect(data.lastname).toEqual('TestLastname');
+          expect(data.firstname).toEqual('TestFirstname');
+          expect(data.email).toEqual('test@test.fr');
+          expect(data.password).toMatch(/^\$2[ayb]\$.{56}$/);
+          expect(data.wishes).toBeDefined();
         });
     });
   });
@@ -58,11 +57,12 @@ describe('UserService', () => {
     it('should return the user', async () => {
       await fixtures.addUser();
       return service.getWithAuth('test@test.fr', 'Test1234@')
-        .then((user) => {
-          expect(user._id).toBeDefined();
-          expect(user.email).toEqual('test@test.fr');
-          expect(user.lastname).toEqual('TestLastname');
-          expect(user.firstname).toEqual('TestFirstname');
+        .then((data) => {
+          expect(data._id).toBeDefined();
+          expect(data.email).toEqual('test@test.fr');
+          expect(data.lastname).toEqual('TestLastname');
+          expect(data.firstname).toEqual('TestFirstname');
+          expect(data.password).toMatch(/^\$2[ayb]\$.{56}$/);
         });
     });
 

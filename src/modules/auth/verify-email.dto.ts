@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class VerifyEmailDto {
@@ -7,4 +7,7 @@ export class VerifyEmailDto {
 
   @Field(() => String)
   token: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
 }
