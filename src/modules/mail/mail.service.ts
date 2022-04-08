@@ -85,16 +85,16 @@ export class MailService {
     )}/trust/notification`;
 
     await this.mailerService.sendMail({
-      to: legator_user.email.toString(),
+      to: trusted_user.email.toString(),
       // from: '"Support Team" <support@example.com>', // override default from
-      subject: `${trusted_user.firstname} ${trusted_user.lastname} vous a ajouté comme personne de confiance`,
+      subject: `${legator_user.firstname} ${legator_user.lastname} vous a ajouté comme personne de confiance`,
       template: __dirname + '/trustNotification', // `.hbs` extension is appended automatically
       context: {
         // filling curly brackets with content
         url,
-        trusted_user_firstname: legator_user.firstname,
         legator_user_firstname: legator_user.firstname,
         legator_user_lastname: legator_user.lastname,
+        trusted_user_firstname: trusted_user.firstname,
         product_name: this.configService.get<string>('product_name'),
         home_url: this.configService.get<string>('base_urls.home'),
         front_url: this.configService.get<string>('base_urls.front'),
@@ -105,20 +105,21 @@ export class MailService {
   async sendTrustedUserInvitation(legator_user: User, trusted_user: User) {
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/auth/confirmation?token=${legator_user.signup_mail_token}&user_id=${
-      legator_user._id
+    )}/auth/confirmation?token=${trusted_user.signup_mail_token}&user_id=${
+      trusted_user._id
     }&fromInvitation=true`;
 
     await this.mailerService.sendMail({
-      to: legator_user.email.toString(), // TODO C'est le trusted il me semble, le legator est déjà sur la plateforme (pareil pour les autres mails) ?
+      to: trusted_user.email.toString(),
       // from: '"Support Team" <support@example.com>', // override default from
-      subject: `${trusted_user.firstname} ${trusted_user.lastname} vous a ajouté comme personne de confiance`,
+      subject: `${legator_user.firstname} ${legator_user.lastname} vous a ajouté comme personne de confiance`,
       template: __dirname + '/trustInvitation', // `.hbs` extension is appended automatically
       context: {
         // filling curly brackets with content
-        firstname: legator_user.firstname,
+        legator_user_firstname: legator_user.firstname,
+        legator_user_lastname: legator_user.lastname,
+        trusted_user_firstname: trusted_user.firstname,
         url,
-        email: legator_user.email,
         product_name: this.configService.get<string>('product_name'),
         home_url: this.configService.get<string>('base_urls.home'),
         front_url: this.configService.get<string>('base_urls.front'),
@@ -130,25 +131,26 @@ export class MailService {
     legator_user: User,
     trusted_user: User
   ) {
-    // const url = `${this.configService.get<string>(
-    //   'base_urls.front'
-    // )}/auth/confirmation?token=${legator_user.signup_mail_token}&user_id=${
-    //   legator_user._id
-    // }&fromInvitation=true`;
-    // await this.mailerService.sendMail({
-    //   to: legator_user.email.toString(),
-    //   // from: '"Support Team" <support@example.com>', // override default from
-    //   subject: `${trusted_user.firstname} ${trusted_user.lastname} vous a ajouté comme personne de confiance`,
-    //   template: __dirname + '/trustInvitation', // `.hbs` extension is appended automatically
-    //   context: {
-    //     // filling curly brackets with content
-    //     firstname: legator_user.firstname,
-    //     url,
-    //     email: legator_user.email,
-    //     product_name: this.configService.get<string>('product_name'),
-    //     home_url: this.configService.get<string>('base_urls.home'),
-    //     front_url: this.configService.get<string>('base_urls.front'),
-    //   },
-    // });
+    /*const url = `${this.configService.get<string>(
+      'base_urls.front'
+    )}/user/deverouillageUrgent?token=${legator_user.signup_mail_token}&user_id=${
+      legator_user._id
+    }&fromInvitation=true`;*/
+    await this.mailerService.sendMail({
+      to: legator_user.email.toString(),
+      // from: '"Support Team" <support@example.com>', // override default from
+      subject: `${trusted_user.firstname} ${trusted_user.lastname} demande l'accès à vos informations urgentes`,
+      template: __dirname + '/unlockUrgent', // `.hbs` extension is appended automatically
+      context: {
+        // filling curly brackets with content
+        legator_user_firstname: legator_user.firstname,
+        //url,
+        trusted_user_firstname: trusted_user.firstname,
+        trusted_user_lastname: trusted_user.lastname,
+        product_name: this.configService.get<string>('product_name'),
+        home_url: this.configService.get<string>('base_urls.home'),
+        front_url: this.configService.get<string>('base_urls.front'),
+      },
+    });
   }
 }
