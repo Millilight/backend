@@ -86,4 +86,59 @@ export class MailService {
         throw err;
       });
   }
+
+  async sendTrustedUserNotification(legator_user: User, trusted_user: User) {
+    const url = `${this.configService.get<string>(
+      'base_urls.front'
+    )}/trust/notification`;
+
+    await this.mailerService
+      .sendMail({
+        to: legator_user.email.toString(),
+        // from: '"Support Team" <support@example.com>', // override default from
+        subject: `${trusted_user.firstname} ${trusted_user.lastname} vous a ajouté comme personne de confiance`,
+        template: __dirname + '/trustNotification', // `.hbs` extension is appended automatically
+        context: {
+          // filling curly brackets with content
+          url,
+          trusted_user_firstname: legator_user.firstname,
+          legator_user_firstname: legator_user.firstname,
+          legator_user_lastname: legator_user.lastname,
+          product_name: this.configService.get<string>('product_name'),
+          home_url: this.configService.get<string>('base_urls.home'),
+          front_url: this.configService.get<string>('base_urls.front'),
+        },
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  async sendTrustedUserInvitation(legator_user: User, trusted_user: User) {
+    const url = `${this.configService.get<string>(
+      'base_urls.front'
+    )}/auth/confirmation?token=${legator_user.signup_mail_token}&user_id=${
+      legator_user._id
+    }&fromInvitation=true`;
+
+    await this.mailerService
+      .sendMail({
+        to: legator_user.email.toString(),
+        // from: '"Support Team" <support@example.com>', // override default from
+        subject: `${trusted_user.firstname} ${trusted_user.lastname} vous a ajouté comme personne de confiance`,
+        template: __dirname + '/trustInvitation', // `.hbs` extension is appended automatically
+        context: {
+          // filling curly brackets with content
+          firstname: legator_user.firstname,
+          url,
+          email: legator_user.email,
+          product_name: this.configService.get<string>('product_name'),
+          home_url: this.configService.get<string>('base_urls.home'),
+          front_url: this.configService.get<string>('base_urls.front'),
+        },
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
 }

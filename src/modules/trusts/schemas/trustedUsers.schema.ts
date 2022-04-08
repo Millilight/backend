@@ -1,19 +1,21 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { Trust } from './trusts.schema';
 
-export enum StateTrustedUser {
-  FILLED,
-  INVITATION_SENT,
-  USER_CREATED,
-  VALIDATED,
-}
-
 @ObjectType()
 export class TrustedUser extends Trust {
+  @Field(() => ID)
+  _id?: string;
+
+  @Field()
+  email?: string;
+
+  @Field()
+  firstname?: string;
+
+  @Field()
+  lastname?: string;
+
   @Field({ nullable: true })
   security_code?: string;
-
-  @Field(() => StateTrustedUser)
-  state: StateTrustedUser;
 }

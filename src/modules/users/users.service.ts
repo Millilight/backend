@@ -24,7 +24,7 @@ export class UsersService {
     const signup_mail_token = generateToken(32);
 
     return await this.userModel
-      .create({...create_user_dto, signup_mail_token: signup_mail_token})
+      .create({ ...create_user_dto, signup_mail_token: signup_mail_token })
       .then((user) => {
         user.signup_mail_token = signup_mail_token;
         return user;
@@ -38,7 +38,7 @@ export class UsersService {
   }
 
   async getAll() {
-    return await this.userModel.find()
+    return await this.userModel.find();
   }
 
   async getWithAuth(email: string, password: string): Promise<User> {
@@ -47,19 +47,24 @@ export class UsersService {
       .select('+password')
       .exec()
       .then((user) => {
-        if(!user) throw new NotFoundException("User not found");
+        if (!user) throw new NotFoundException('User not found');
         if (bcrypt.compareSync(password, user.password)) return user;
         else return null;
       });
   }
 
   async findByID(user_id: string): Promise<User> {
-    return await this.userModel.findOne({ _id: user_id })
+    return await this.userModel
+      .findOne({ _id: user_id })
       .exec()
       .then((user) => {
-        if(!user) throw new NotFoundException("User not found");
+        if (!user) throw new NotFoundException('User not found');
         return user;
       });
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return await this.userModel.findOne({ email: email }).exec(); // Only used to check if an user already has an account so as to add him as a truster_user. There is no NotFoundException then.
   }
 
   async findByIDWithNewEmailAndNewEmailToken(user_id: string): Promise<User> {
@@ -89,7 +94,9 @@ export class UsersService {
         { _id: user._id },
         {
           $set: convertToDotNotation(user_update),
-          $unset: {reset_password_token: user_update.new_password ? "" : null}
+          $unset: {
+            reset_password_token: user_update.new_password ? '' : null,
+          },
         },
         { new: true, omitUndefined: true }
       )
@@ -129,15 +136,17 @@ export class UsersService {
       });
   }
 
-  async verifyEmail(verify_email_dto: VerifyEmailDto) : Promise<VerifyEmailResponse> {
+  async verifyEmail(
+    verify_email_dto: VerifyEmailDto
+  ): Promise<VerifyEmailResponse> {
     return await this.userModel
-      .findOne({ _id: verify_email_dto.user_id})
-      .select("signup_mail_token mail_verified")
+      .findOne({ _id: verify_email_dto.user_id })
+      .select('signup_mail_token mail_verified')
       .then((user) => {
         if (!user) throw new NotFoundException('Unable to find user');
 
         if (user.signup_mail_token !== verify_email_dto.token)
-          return {success : false};
+          return { success: false };
 
         if (user.mail_verified)
           throw new ConflictException('This mail has already been verified');
@@ -152,14 +161,16 @@ export class UsersService {
       });
   }
 
-  async askResetPassword(ask_reset_password_user_dto: AskResetPasswordUserDto) : Promise<User> {
+  async askResetPassword(
+    ask_reset_password_user_dto: AskResetPasswordUserDto
+  ): Promise<User> {
     return await this.userModel
       .findOneAndUpdate(
-        { email : ask_reset_password_user_dto.email },
+        { email: ask_reset_password_user_dto.email },
         { reset_password_token: generateToken(32) },
         { new: true, omitUndefined: true }
       )
-      .select("+reset_password_token -wishes")
+      .select('+reset_password_token -wishes')
       .exec()
       .then((user: User) => {
         if (!user) throw new NotFoundException('The user could not be found.');
