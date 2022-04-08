@@ -97,13 +97,17 @@ export class TrustsResolver {
   ): Promise<UnlockUrgentDataResponse> {
     // 1. unlock the urgent data in the trust by flipping the bool
     const trust = await this.trustsService.unlockUrgentData(
-      current_user_id,
+      current_user._id,
       unlock_urgent_data_input
     );
 
     // 2. send a notification to the legator
-    this.mailService.sendTrustedUserInvitation();
+    await this.mailService.sendUnlockedUrgentDataNotification(
+      trust.legator_user,
+      trust.trusted_user
+    );
 
     // 3. return urgent Data
+    return { urgent_data: { wishes: trust.legator_user.wishes } };
   }
 }

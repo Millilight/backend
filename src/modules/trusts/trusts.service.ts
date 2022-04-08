@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { StateTrust, Trust, TrustDocument } from './schemas/trusts.schema';
 import { ConfirmSecurityCodeInput } from './dto/confirm-security-code.input';
+import { UnlockUrgentDataInput } from './dto/unlock-urgent-data.input';
 
 @Injectable()
 export class TrustsService {
@@ -39,9 +40,22 @@ export class TrustsService {
     return trust.save();
   }
 
-  async unlockData(
+  async unlockUrgentData(
     current_user_id: string,
-    unlock_urgent_data_input: 
-  ) {
+    unlock_urgent_data_input: UnlockUrgentDataInput
+  ): Promise<Trust> {
+    return this.trustModel
+      .findOne({
+        legator_user: unlock_urgent_data_input.legator_user_id,
+        trusted_user: current_user_id,
+      })
+      .then((trust) => {
+        if (!trust) throw new NotFoundException();
+        if (trust.urgent_data_unlocked)
+          throw new UnauthorizedException('Already unlocked.');
+        trust.urgent_data_unlocked = true;
+        trust.urgent_data_unlocked_date = new Date();
+        return trust.save();
+      });
   }
 }
