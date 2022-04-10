@@ -1,11 +1,11 @@
-import { LegatorUser, TrustedUser, User } from 'src/graphql';
+import { Heir, Legator, User } from 'src/graphql';
 import { TrustDB, TrustDocument } from 'src/modules/trusts/schemas/trusts.schema';
 
 import { UserDocument } from 'src/modules/users/schemas/user.schema';
 
-export const trustDocToTrustedUser = (
+export const trustDocToHeir = (
   trust_doc: TrustDocument
-): TrustedUser => ({
+): Heir => ({
   _id: trust_doc.trusted_user_id,
   user_details: undefined,
   state: trust_doc.state,
@@ -14,9 +14,9 @@ export const trustDocToTrustedUser = (
   urgent_data_unlocked_date: trust_doc.urgent_data_unlocked_date,
 });
 
-export const trustDocToLegatorUser = (
+export const trustDocToLegator = (
   trust_doc: TrustDocument
-): LegatorUser => ({
+): Legator => ({
   _id: trust_doc.legator_user_id,
   user_details: undefined,
   state: trust_doc.state,
@@ -25,12 +25,12 @@ export const trustDocToLegatorUser = (
   urgent_data_unlocked_date: trust_doc.urgent_data_unlocked_date,
 });
 
-export const trustDocToLegatorUserAndTrustedUser = (
+export const trustDocToLegatorAndHeir = (
   trust_doc: TrustDocument
 ) => {
   return {
-    legator_user: trustDocToLegatorUser(trust_doc),
-    trusted_user: trustDocToTrustedUser(trust_doc),
+    legator_user: trustDocToLegator(trust_doc),
+    heir_user: trustDocToHeir(trust_doc),
   };
 };
 
@@ -42,7 +42,7 @@ export const userDocToUser = (
   firstname: user_doc.firstname,
   lastname: user_doc.lastname,
   urgent_data: { wishes: user_doc.wishes },
-  trusted_users: undefined,
+  heir_users: undefined,
   legator_users: undefined
 });
 

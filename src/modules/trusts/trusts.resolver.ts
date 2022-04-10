@@ -6,7 +6,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 
-import { AddTrustedUserDto } from './dto/add-trusted-user.dto';
+import { AddHeirDto } from './dto/add-trusted-user.dto';
 import { ConfirmSecurityCodeDto } from './dto/confirm-security-code.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { CurrentUser } from '../users/users.decorator';
@@ -18,10 +18,10 @@ import { UsersService } from '../users/users.service';
 import generateToken from '@/utils/generateToken';
 import { UnlockUrgentDataDto } from './dto/unlock-urgent-data.dto';
 import {
-  AddTrustedUserResponse,
+  AddHeirResponse,
   ConfirmSecurityCodeResponse,
-  LegatorUser,
-  TrustedUser,
+  Legator,
+  Heir,
   UnlockUrgentDataResponse,
   User,
   UserDetails,
@@ -43,56 +43,56 @@ export class TrustsResolver {
 
   // TODO : conflict if trust already exists
   @Mutation()
-  async addTrustedUser(
-    @Args('add_trusted_user_input') add_trusted_user_input: AddTrustedUserDto,
+  async addHeir(
+    @Args('add_heir_user_input') add_heir_user_input: AddHeirDto,
     @CurrentUser() current_user: User
-  ): Promise<AddTrustedUserResponse> {
+  ): Promise<AddHeirResponse> {
     const legator_user = current_user;
 
     // 1. Get the future trusted user
-    let trusted_user;
+    let heir_user;
     try {
-      trusted_user = await this.usersService.findByEmail(
-        add_trusted_user_input.email
+      heir_user = await this.usersService.findByEmail(
+        add_heir_user_input.email
       );
     } catch {}
-    const user_already_exist = trusted_user ? true : false;
+    const user_already_exist = heir_user ? true : false;
     let create_user_dto: CreateUserDto;
     if (!user_already_exist) {
       create_user_dto = {
-        firstname: add_trusted_user_input.firstname,
-        lastname: add_trusted_user_input.lastname,
-        email: add_trusted_user_input.email,
+        firstname: add_heir_user_input.firstname,
+        lastname: add_heir_user_input.lastname,
+        email: add_heir_user_input.email,
         password: generateToken(32),
       };
-      trusted_user = await this.usersService.create(create_user_dto);
+      heir_user = await this.usersService.create(create_user_dto);
     }
 
     // 2. Create the trust
-    const trusted_user_created = await this.trustsService.create(
+    const heir_user_created = await this.trustsService.create(
       legator_user,
-      trusted_user
+      heir_user
     );
 
     // 3. Send a notitication by email
     if (user_already_exist)
-      await this.mailService.sendTrustedUserNotification(
+      await this.mailService.sendHeirNotification(
         legator_user,
-        trusted_user
+        heir_user
       );
     else {
       const signup_mail_token = await this.usersService.getSignupMailToken(
-        trusted_user._id
+        heir_user._id
       );
-      await this.mailService.sendTrustedUserInvitation(
+      await this.mailService.sendHeirInvitation(
         legator_user,
-        trusted_user,
+        heir_user,
         signup_mail_token
       );
     }
 
     // 4. Return the trusted user
-    return { trusted_user: trusted_user_created };
+    return { heir_user: heir_user_created };
   }
 
   @Mutation()
@@ -113,7 +113,7 @@ export class TrustsResolver {
     @CurrentUser() current_user: User
   ): Promise<UnlockUrgentDataResponse> {
     // 1. unlock the urgent data in the trust by flipping the bool
-    const { legator_user, trusted_user } =
+    const { legator_user, heir_user } =
       await this.trustsService.unlockUrgentData(
         current_user._id,
         unlock_urgent_data_input
@@ -123,8 +123,8 @@ export class TrustsResolver {
     await this.mailService.sendUnlockedUrgentDataNotification(
       legator_user,
       await this.usersService.userDetailsByID(legator_user._id),
-      trusted_user,
-      await this.usersService.userDetailsByID(trusted_user._id)
+      heir_user,
+      await this.usersService.userDetailsByID(heir_user._id)
     );
 
     // 3. return urgent Data
@@ -149,17 +149,17 @@ export class TrustsResolver {
   }
 }
 
-@Resolver(TrustedUser)
-export class TrustedUserResolver {
+@Resolver(Heir)
+export class HeirResolver {
   constructor(
     private usersService: UsersService,
   ) {}
 
   @ResolveField('user_details')
-  async trustedUserDetails(
-    @Parent() trusted_user: TrustedUser
+  async HeirDetails(
+    @Parent() heir_user: Heir
   ): Promise<UserDetails> {
-    return this.usersService.userDetailsByID(trusted_user._id);
+    return this.usersService.userDetailsByID(heir_user._id);
   }
 }
 
@@ -167,26 +167,26 @@ export class TrustedUserResolver {
 export class TrustExtendUserResolver {
   constructor(private trustsService: TrustsService) {}
 
-  @ResolveField('trusted_users')
-  async trustedUsers(@Parent() user: User): Promise<TrustedUser[]> {
+  @ResolveField('heir_users')
+  async Heirs(@Parent() user: User): Promise<Heir[]> {
     return this.trustsService.findAllHeirs(user);
   }
 
   @ResolveField('legator_users')
-  async legatorUsers(@Parent() user: User): Promise<LegatorUser[]> {
+  async Legators(@Parent() user: User): Promise<Legator[]> {
     return this.trustsService.findAllLegators(user);
   }
 }
 
-@Resolver(LegatorUser)
-export class LegatorUserResolver {
+@Resolver(Legator)
+export class LegatorResolver {
   constructor(
     private usersService: UsersService,
   ) {}
 
   @ResolveField('user_details')
-  async legatorUserDetails(
-    @Parent() legator_user: LegatorUser
+  async LegatorDetails(
+    @Parent() legator_user: Legator
   ): Promise<UserDetails> {
     return this.usersService.userDetailsByID(legator_user._id);
   }

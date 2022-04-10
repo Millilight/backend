@@ -1,7 +1,7 @@
-import { AddTrustedUserInput } from '../../../graphql';
+import { AddHeirInput } from '../../../graphql';
 import { IsEmail } from 'class-validator';
 
-export class AddTrustedUserDto extends AddTrustedUserInput {
+export class AddHeirDto extends AddHeirInput {
   @IsEmail()
   email: string;
 }

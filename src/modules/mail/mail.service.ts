@@ -1,4 +1,4 @@
-import { LegatorUser, TrustedUser, User, UserDetails } from '@gqltypes';
+import { Heir, Legator, User, UserDetails } from '@gqltypes';
 
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
@@ -85,14 +85,14 @@ export class MailService {
     });
   }
 
-  async sendTrustedUserNotification(legator_user: User, trusted_user: User) {
+  async sendHeirNotification(legator_user: User, heir_user: User) {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
     )}/trust/notification`;
 
     await this.mailerService.sendMail({
-      to: trusted_user.email.toString(),
+      to: heir_user.email.toString(),
       // from: '"Support Team" <support@example.com>', // override default from
       subject: `${legator_user.firstname} ${legator_user.lastname} vous a ajouté comme personne de confiance`,
       template: __dirname + '/trustNotification', // `.hbs` extension is appended automatically
@@ -101,7 +101,7 @@ export class MailService {
         url,
         legator_user_firstname: legator_user.firstname,
         legator_user_lastname: legator_user.lastname,
-        trusted_user_firstname: trusted_user.firstname,
+        heir_user_firstname: heir_user.firstname,
         product_name: this.configService.get<string>('product_name'),
         home_url: this.configService.get<string>('base_urls.home'),
         front_url: this.configService.get<string>('base_urls.front'),
@@ -109,20 +109,20 @@ export class MailService {
     });
   }
 
-  async sendTrustedUserInvitation(
+  async sendHeirInvitation(
     legator_user: User,
-    trusted_user: User,
+    heir_user: User,
     signup_mail_token: string
   ) {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
     )}/auth/confirmation?token=${signup_mail_token}&user_id=${
-      trusted_user._id
+      heir_user._id
     }&fromInvitation=true`;
 
     await this.mailerService.sendMail({
-      to: trusted_user.email.toString(),
+      to: heir_user.email.toString(),
       // from: '"Support Team" <support@example.com>', // override default from
       subject: `${legator_user.firstname} ${legator_user.lastname} vous a ajouté comme personne de confiance`,
       template: __dirname + '/trustInvitation', // `.hbs` extension is appended automatically
@@ -130,7 +130,7 @@ export class MailService {
         // filling curly brackets with content
         legator_user_firstname: legator_user.firstname,
         legator_user_lastname: legator_user.lastname,
-        trusted_user_firstname: trusted_user.firstname,
+        heir_user_firstname: heir_user.firstname,
         url,
         product_name: this.configService.get<string>('product_name'),
         home_url: this.configService.get<string>('base_urls.home'),
@@ -140,10 +140,10 @@ export class MailService {
   }
 
   async sendUnlockedUrgentDataNotification(
-    legator_user: LegatorUser,
+    legator_user: Legator,
     legator_user_details: UserDetails,
-    trusted_user: TrustedUser,
-    trusted_user_details: UserDetails
+    heir_user: Heir,
+    heir_user_details: UserDetails
   ) {
     if (this.configService.get<string>('node_env') === 'development') return;
     /*const url = `${this.configService.get<string>(
@@ -154,14 +154,14 @@ export class MailService {
     await this.mailerService.sendMail({
       to: legator_user_details.email,
       // from: '"Support Team" <support@example.com>', // override default from
-      subject: `${trusted_user_details.firstname} ${trusted_user_details.lastname} demande l'accès à vos informations urgentes`,
+      subject: `${heir_user_details.firstname} ${heir_user_details.lastname} demande l'accès à vos informations urgentes`,
       template: __dirname + '/unlockUrgent', // `.hbs` extension is appended automatically
       context: {
         // filling curly brackets with content
         legator_user_firstname: legator_user_details.firstname,
         //url,
-        trusted_user_firstname: trusted_user_details.firstname,
-        trusted_user_lastname: trusted_user_details.lastname,
+        heir_user_firstname: heir_user_details.firstname,
+        heir_user_lastname: heir_user_details.lastname,
         product_name: this.configService.get<string>('product_name'),
         home_url: this.configService.get<string>('base_urls.home'),
         front_url: this.configService.get<string>('base_urls.front'),
