@@ -3,7 +3,7 @@ enum StateTrust {
   VALIDATED
 }
 
-type TrustedUser {
+type Heir {
   _id: ID!
   user_details: UserDetails!
   security_code: String
@@ -13,7 +13,7 @@ type TrustedUser {
   state: StateTrust!
 }
 
-type LegatorUser {
+type Legator {
   _id: ID!
   user_details: UserDetails!
   added_date: Date!
@@ -29,18 +29,18 @@ type UserDetails {
 }
 
 extend type User {
-  trusted_users: [TrustedUser!]!
-  legator_users: [LegatorUser!]!
+  heir_users: [Heir!]!
+  legator_users: [Legator!]!
 }
 
-input AddTrustedUserInput {
+input AddHeirInput {
   firstname: String!
   lastname: String!
   email: String!
 }
 
-type AddTrustedUserResponse {
-  trusted_user: TrustedUser!
+type AddHeirResponse {
+  heir_user: Heir!
 }
 
 input ConfirmSecurityCodeInput {
@@ -49,7 +49,7 @@ input ConfirmSecurityCodeInput {
 }
 
 type ConfirmSecurityCodeResponse {
-  legator_user: LegatorUser!
+  legator_user: Legator!
 }
 
 input UnlockUrgentDataInput {
@@ -83,9 +83,9 @@ type Query {
 }
 
 type Mutation {
-  addTrustedUser(
-    add_trusted_user_input: AddTrustedUserInput!
-  ): AddTrustedUserResponse!
+  addHeir(
+    add_heir_user_input: AddHeirInput!
+  ): AddHeirResponse!
   verifyEmailWithInvitation(
     verify_email_with_invitation_input: VerifyEmailWithInvitationInput!
   ): VerifyEmailWithInvitationResponse!

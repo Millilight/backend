@@ -1,4 +1,4 @@
-import { LegatorUserResolver, TrustExtendUserResolver, TrustedUserResolver, TrustsResolver } from './trusts.resolver';
+import { HeirResolver, LegatorResolver, TrustExtendUserResolver, TrustsResolver } from './trusts.resolver';
 
 import { MailModule } from '../mail/mail.module';
 import { Module } from '@nestjs/common';
@@ -18,7 +18,7 @@ import { UsersService } from '../users/users.service';
     MailModule,
     UsersModule,
   ],
-  providers: [TrustsService, TrustsResolver, TrustedUserResolver, LegatorUserResolver, TrustExtendUserResolver, UsersService],
+  providers: [TrustsService, TrustsResolver, HeirResolver, LegatorResolver, TrustExtendUserResolver, UsersService],
   exports: [TrustsService],
 })
 export class TrustsModule {}

@@ -12,7 +12,7 @@ export enum StateTrust {
     VALIDATED = "VALIDATED"
 }
 
-export class AddTrustedUserInput {
+export class AddHeirInput {
     firstname: string;
     lastname: string;
     email: string;
@@ -83,8 +83,8 @@ export class VerifyEmailDto {
     password?: Nullable<string>;
 }
 
-export class TrustedUser {
-    __typename?: 'TrustedUser';
+export class Heir {
+    __typename?: 'Heir';
     _id: string;
     user_details: UserDetails;
     security_code?: Nullable<string>;
@@ -94,8 +94,8 @@ export class TrustedUser {
     state: StateTrust;
 }
 
-export class LegatorUser {
-    __typename?: 'LegatorUser';
+export class Legator {
+    __typename?: 'Legator';
     _id: string;
     user_details: UserDetails;
     added_date: Date;
@@ -113,8 +113,8 @@ export class UserDetails {
 
 export class User {
     __typename?: 'User';
-    trusted_users: TrustedUser[];
-    legator_users: LegatorUser[];
+    heir_users: Heir[];
+    legator_users: Legator[];
     _id: string;
     email: string;
     firstname: string;
@@ -122,14 +122,14 @@ export class User {
     urgent_data: UrgentData;
 }
 
-export class AddTrustedUserResponse {
-    __typename?: 'AddTrustedUserResponse';
-    trusted_user: TrustedUser;
+export class AddHeirResponse {
+    __typename?: 'AddHeirResponse';
+    heir_user: Heir;
 }
 
 export class ConfirmSecurityCodeResponse {
     __typename?: 'ConfirmSecurityCodeResponse';
-    legator_user: LegatorUser;
+    legator_user: Legator;
 }
 
 export class UnlockUrgentDataResponse {
@@ -158,7 +158,7 @@ export abstract class IQuery {
 export abstract class IMutation {
     __typename?: 'IMutation';
 
-    abstract addTrustedUser(add_trusted_user_input: AddTrustedUserInput): AddTrustedUserResponse | Promise<AddTrustedUserResponse>;
+    abstract addHeir(add_heir_user_input: AddHeirInput): AddHeirResponse | Promise<AddHeirResponse>;
 
     abstract verifyEmailWithInvitation(verify_email_with_invitation_input: VerifyEmailWithInvitationInput): VerifyEmailWithInvitationResponse | Promise<VerifyEmailWithInvitationResponse>;
 
