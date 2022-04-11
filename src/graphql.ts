@@ -107,9 +107,10 @@ export class Legator {
     _id: string;
     user_details: UserDetails;
     added_date: Date;
+    state: StateTrust;
     urgent_data_unlocked: boolean;
     urgent_data_unlocked_date?: Nullable<Date>;
-    state: StateTrust;
+    urgent_data?: Nullable<UrgentData>;
 }
 
 export class UserDetails {
