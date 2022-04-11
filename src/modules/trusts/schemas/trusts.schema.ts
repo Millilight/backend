@@ -29,7 +29,7 @@ export class TrustDB {
     ref: 'User',
     required: true,
   })
-  trusted_user_id: string;
+  heir_user_id: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

@@ -6,7 +6,7 @@ import { UserDocument } from 'src/modules/users/schemas/user.schema';
 export const trustDocToHeir = (
   trust_doc: TrustDocument
 ): Heir => ({
-  _id: trust_doc.trusted_user_id,
+  _id: trust_doc.heir_user_id,
   user_details: undefined,
   state: trust_doc.state,
   added_date: trust_doc.added_date,

@@ -23,7 +23,7 @@ export class TrustsService {
   async create(legator_user: User, heir_user: User): Promise<Heir> {
     const trust_db: TrustDB = {
       state: StateTrust.INVITATION_SENT,
-      trusted_user_id: heir_user._id,
+      heir_user_id: heir_user._id,
       legator_user_id: legator_user._id,
       security_code: generateToken(8),
     };
