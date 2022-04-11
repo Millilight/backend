@@ -13,7 +13,7 @@ import { CurrentUser } from '../users/users.decorator';
 import { MailService } from '../mail/mail.service';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { TrustsService } from './trusts.service';
-import { UseFilters } from '@nestjs/common';
+import { UnauthorizedException, UseFilters } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import generateToken from '@/utils/generateToken';
 import { UnlockUrgentDataDto } from './dto/unlock-urgent-data.dto';
@@ -26,6 +26,7 @@ import {
   User,
   UserDetails,
   VerifyEmailWithInvitationResponse,
+  UrgentData,
 } from 'src/graphql';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
@@ -189,5 +190,13 @@ export class LegatorResolver {
     @Parent() legator_user: Legator
   ): Promise<UserDetails> {
     return this.usersService.userDetailsByID(legator_user._id);
+  }
+
+  @ResolveField('urgent_data')
+  async UrgentData(
+    @Parent() legator_user: Legator
+  ): Promise<UrgentData> {
+    if(!legator_user.urgent_data_unlocked) throw new UnauthorizedException("Urgent data locked");
+    return this.usersService.getUrgentData(legator_user._id);
   }
 }

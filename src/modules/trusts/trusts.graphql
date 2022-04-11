@@ -17,9 +17,10 @@ type Legator {
   _id: ID!
   user_details: UserDetails!
   added_date: Date!
+  state: StateTrust!
   urgent_data_unlocked: Boolean!
   urgent_data_unlocked_date: Date
-  state: StateTrust!
+  urgent_data: UrgentData
 }
 
 type UserDetails {
