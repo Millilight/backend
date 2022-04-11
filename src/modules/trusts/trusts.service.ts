@@ -57,8 +57,8 @@ export class TrustsService {
   ): Promise<{ legator_user: Legator; heir_user: Heir }> {
     return this.trustModel
       .findOne({
-        legator_user: unlock_urgent_data_input.legator_user_id,
-        heir_user: current_user_id,
+        legator_user_id: unlock_urgent_data_input.legator_user_id,
+        heir_user_id: current_user_id,
       })
       .then((trust) => {
         if (!trust) throw new NotFoundException();

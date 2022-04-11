@@ -71,10 +71,18 @@ export class UpdateUserDto {
     password?: Nullable<string>;
 }
 
-export class UpdateWishesDto {
+export class UpdateWishesInput {
     burial_cremation?: Nullable<string>;
     burial_cremation_place?: Nullable<string>;
     music?: Nullable<string>;
+    religion?: Nullable<string>;
+    place?: Nullable<string>;
+    prevoyance?: Nullable<string>;
+    list_of_people?: Nullable<string>;
+    coffin?: Nullable<string>;
+    ornament?: Nullable<string>;
+    text?: Nullable<string>;
+    other?: Nullable<string>;
 }
 
 export class VerifyEmailDto {
@@ -178,7 +186,7 @@ export abstract class IMutation {
 
     abstract updateUser(update_user_dto: UpdateUserDto): User | Promise<User>;
 
-    abstract updateWishes(update_wishes_dto: UpdateWishesDto): Wishes | Promise<Wishes>;
+    abstract updateWishes(update_wishes_dto: UpdateWishesInput): Wishes | Promise<Wishes>;
 
     abstract verifyEmail(verify_email_dto: VerifyEmailDto): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }

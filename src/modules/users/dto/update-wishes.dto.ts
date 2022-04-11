@@ -1,13 +1,3 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { UpdateWishesInput } from "@gqltypes";
 
-@InputType()
-export class UpdateWishesDto {
-  @Field(() => String, { nullable: true })
-  burial_cremation: string;
-
-  @Field(() => String, { nullable: true })
-  burial_cremation_place: string;
-
-  @Field(() => String, { nullable: true })
-  music: string;
-}
+export class UpdateWishesDto extends UpdateWishesInput {}
