@@ -1,3 +1,5 @@
+import * as encrypt from 'mongoose-encryption';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document } from 'mongoose';
@@ -41,3 +43,14 @@ export class WishesDB {
 }
 
 export const WishesDBSchema = SchemaFactory.createForClass(WishesDB);
+
+// const encKey = process.env.SOME_32BYTE_BASE64_STRING;
+// const sigKey = process.env.SOME_64BYTE_BASE64_STRING;
+
+const encKey = '3QY5IYo7KirstpPSZ/aXtzEZ8q1jAAYFUEJL4g8rPO8=';
+const sigKey =
+  '6K6gQtuj52BGL5wuP7dSW/NSBCd/hkjIE70SBMSt+2GCgReQZMV6BxoGFq7RT8EnPmEE19TZNidEoR40dZSacw==';
+
+WishesDBSchema.plugin(encrypt, { encryptionKey: encKey, signingKey: sigKey });
+// This adds _ct and _ac fields to the schema, as well as pre 'init' and pre 'save' middleware,
+// and encrypt, decrypt, sign, and authenticate instance methods

@@ -2,7 +2,6 @@ import { Model } from 'mongoose';
 import {
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -18,10 +17,10 @@ import {
   User,
   UserDetails,
   VerifyEmailDto,
-  VerifyEmailResponse,
 } from '@gqltypes';
 import { UserDocument } from './schemas/user.schema';
 import { userDocToUser } from '@parsers';
+import { UpdateWishesDto } from './dto/update-wishes.dto';
 
 @Injectable()
 export class UsersService {
@@ -68,7 +67,10 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userModel.findOne({ email: email }).exec().then(userDocToUser); // Only used to check if an user already has an account so as to add him as a truster_user. There is no NotFoundException then.
+    return await this.userModel
+      .findOne({ email: email })
+      .exec()
+      .then(userDocToUser); // Only used to check if an user already has an account so as to add him as a truster_user. There is no NotFoundException then.
   }
 
   async getNewEmail(user_id: string): Promise<string> {
@@ -127,7 +129,10 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec().then(user_docs=>user_docs.map(userDocToUser));
+    return await this.userModel
+      .find()
+      .exec()
+      .then((user_docs) => user_docs.map(userDocToUser));
   }
 
   async updateUser(user: User, user_update: any): Promise<User> {
@@ -146,9 +151,24 @@ export class UsersService {
       .then((user_doc) => {
         if (!user_doc)
           throw new NotFoundException('The user could not be updated.');
-          
+        console.log(user_doc);
+
         return userDocToUser(user_doc);
       });
+  }
+
+  async updateWishes(
+    user: User,
+    update_wishes_dto: UpdateWishesDto
+  ): Promise<User> {
+    const user_db = await this.userModel.findOne({ _id: user._id });
+    if (!user_db) throw new NotFoundException('User not found.');
+    Object.getOwnPropertyNames(update_wishes_dto).forEach((wish) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      user_db.wishes[wish] = update_wishes_dto[wish];
+    });
+    await user_db.save();
+    return this.userModel.findOne({ _id: user._id }).then(userDocToUser);
   }
 
   async updateEmailUser(user: User): Promise<User> {
@@ -162,9 +182,7 @@ export class UsersService {
     return user_doc.save().then(userDocToUser);
   }
 
-  async verifyEmail(
-    verify_email_dto: VerifyEmailDto
-  ): Promise<User> {
+  async verifyEmail(verify_email_dto: VerifyEmailDto): Promise<User> {
     return await this.userModel
       .findOne({ _id: verify_email_dto.user_id })
       .select('signup_mail_token mail_verified')
@@ -226,7 +244,7 @@ export class UsersService {
       .exec()
       .then((user_doc) => {
         if (!user_doc) throw new NotFoundException('User not found');
-        return {wishes: user_doc.wishes};
+        return { wishes: user_doc.wishes };
       });
   }
 
@@ -239,7 +257,7 @@ export class UsersService {
         return {
           email: user_doc.email,
           firstname: user_doc.firstname,
-          lastname: user_doc.lastname
+          lastname: user_doc.lastname,
         };
       });
   }

@@ -35,12 +35,14 @@ export class UsersResolver {
   ): Promise<User> {
     const user = await this.usersService.create(create_user_dto);
 
-    if (this.configService.get<string>('node_env') !== "DEVELOPMENT"){
-      const signup_mail_token = await this.usersService.getSignupMailToken(user._id);
+    if (this.configService.get<string>('node_env') !== 'DEVELOPMENT') {
+      const signup_mail_token = await this.usersService.getSignupMailToken(
+        user._id
+      );
       await this.mailService.sendUserConfirmation(user, signup_mail_token);
     }
 
-    return user as User;
+    return user;
   }
 
   @Public()
@@ -64,7 +66,7 @@ export class UsersResolver {
     @Args('update_wishes_dto') update_wishes_dto: UpdateWishesDto
   ): Promise<Wishes> {
     return await this.usersService
-      .updateUser(user, { wishes: update_wishes_dto })
+      .updateWishes(user, update_wishes_dto)
       .then((user) => user.urgent_data.wishes);
   }
 
@@ -75,13 +77,18 @@ export class UsersResolver {
   ): Promise<User> {
     const new_user = await this.usersService.updateUser(user, update_user_dto);
 
-    if (update_user_dto.new_email) { // TODO : revoir si optimisable
-      const new_email = await this.usersService.getNewEmail(
+    if (update_user_dto.new_email) {
+      // TODO : revoir si optimisable
+      const new_email = await this.usersService.getNewEmail(new_user._id);
+      const new_email_token = await this.usersService.getNewEmailToken(
         new_user._id
       );
-      const new_email_token = await this.usersService.getNewEmailToken(new_user._id);
-      if (this.configService.get<string>('node_env') !== "DEVELOPMENT")
-        await this.mailService.sendUserEmailUpdate(new_user, new_email, new_email_token);
+      if (this.configService.get<string>('node_env') !== 'DEVELOPMENT')
+        await this.mailService.sendUserEmailUpdate(
+          new_user,
+          new_email,
+          new_email_token
+        );
     }
 
     return new_user;
@@ -97,11 +104,12 @@ export class UsersResolver {
       ask_reset_password_user_dto
     );
 
-    if (this.configService.get<string>('node_env') !== "DEVELOPMENT"){
-      const reset_password_token = await this.usersService.getResetPasswordToken(user._id);
+    if (this.configService.get<string>('node_env') !== 'DEVELOPMENT') {
+      const reset_password_token =
+        await this.usersService.getResetPasswordToken(user._id);
       await this.mailService.resetPassword(user, reset_password_token);
     }
-    
+
     return { success: true };
   }
 
@@ -116,9 +124,9 @@ export class UsersResolver {
       reset_password_user_dto.token
     ); // To be sure the user asked for a password change
 
-    return (await this.usersService.updateUser(user, {
+    return await this.usersService.updateUser(user, {
       password: reset_password_user_dto.new_password,
-    }));
+    });
   }
 
   // The user needs to ask before (see updateUser mutation)

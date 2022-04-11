@@ -1,8 +1,7 @@
-import { UserDB, UserDBSchema } from './schemas/user.schema';
-
 import { MailModule } from '../mail/mail.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserDBSchema } from './schemas/user.schema';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
 

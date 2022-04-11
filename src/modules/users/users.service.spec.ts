@@ -2,11 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { Fixtures } from '@/utils/fixtures';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  MongooseTestModule
-} from '@/utils/MongooseTestModule';
+import { MongooseTestModule } from '@/utils/MongooseTestModule';
 import { NotFoundException } from '@nestjs/common';
-import { User } from '../../graphql';
 import { UserDBSchema } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
@@ -57,19 +54,18 @@ describe('UserService', () => {
   describe('get user for auth', () => {
     it('should return the user', async () => {
       await fixtures.addUser();
-      return service.getWithAuth('test@test.fr', 'Test1234@')
-        .then((user) => {
-          expect(user._id).toBeDefined();
-          expect(user.email).toEqual('test@test.fr');
-          expect(user.lastname).toEqual('TestLastname');
-          expect(user.firstname).toEqual('TestFirstname');
-        });
+      return service.getWithAuth('test@test.fr', 'Test1234@').then((user) => {
+        expect(user._id).toBeDefined();
+        expect(user.email).toEqual('test@test.fr');
+        expect(user.lastname).toEqual('TestLastname');
+        expect(user.firstname).toEqual('TestFirstname');
+      });
     });
 
     it('should return NotFoundException', async () => {
-      await expect(service.getWithAuth('notfound@test.fr', 'Test1234@'))
-        .rejects
-        .toThrow(NotFoundException);
+      await expect(
+        service.getWithAuth('notfound@test.fr', 'Test1234@')
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -87,9 +83,9 @@ describe('UserService', () => {
     // });
 
     it('should return NotFoundException', async () => {
-      await expect(service.findByID('624c3a905d3227f0ce675fd1'))
-        .rejects
-        .toThrow(NotFoundException);
+      await expect(
+        service.findByID('624c3a905d3227f0ce675fd1')
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -115,12 +111,10 @@ describe('UserService', () => {
     //       expect(data.firstname).toEqual('TestFirstname');
     //     });
     // });
-
     // it('should return NotFoundException', async () => {
     //   await expect(service.updateUser('notfound@test.fr', 'Test1234@'))
     //     .rejects
     //     .toThrow(NotFoundException);
     // });
   });
-  
 });
