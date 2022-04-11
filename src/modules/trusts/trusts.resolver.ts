@@ -129,7 +129,7 @@ export class TrustsResolver {
 
     // 3. return urgent Data
     return {
-      urgent_data: await this.usersService.getUrgentData(legator_user._id),
+      success: true,
     };
   }
 

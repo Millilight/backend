@@ -134,7 +134,7 @@ export class ConfirmSecurityCodeResponse {
 
 export class UnlockUrgentDataResponse {
     __typename?: 'UnlockUrgentDataResponse';
-    urgent_data: UrgentData;
+    success: boolean;
 }
 
 export class UrgentDataResponse {

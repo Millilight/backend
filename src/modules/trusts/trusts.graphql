@@ -57,7 +57,7 @@ input UnlockUrgentDataInput {
 }
 
 type UnlockUrgentDataResponse {
-  urgent_data: UrgentData!
+  success: Boolean!
 }
 
 input UrgentDataInput {
