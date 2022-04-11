@@ -36,8 +36,8 @@ export class TrustsService {
   ): Promise<Legator> {
     // 1. Get the trust
     const trust_doc = await this.trustModel.findOne({
-      legator_user: confirm_security_code_input.legator_user_id,
-      heir_user: current_user._id,
+      legator_user_id: confirm_security_code_input.legator_user_id,
+      heir_user_id: current_user._id,
     });
     if (!trust_doc) throw new NotFoundException();
 
