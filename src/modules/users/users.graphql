@@ -90,4 +90,12 @@ type Wishes {
   burial_cremation: String
   burial_cremation_place: String
   music: String
+  religion: String
+  place: String
+  prevoyance: String
+  list_of_people: String
+  coffin: String
+  ornament: String
+  text: String
+  other: String
 }
