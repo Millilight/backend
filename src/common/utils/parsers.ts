@@ -9,6 +9,7 @@ export const trustDocToHeir = (
   _id: trust_doc.heir_user_id,
   user_details: undefined,
   state: trust_doc.state,
+  security_code: trust_doc.security_code,
   added_date: trust_doc.added_date,
   urgent_data_unlocked: trust_doc.urgent_data_unlocked,
   urgent_data_unlocked_date: trust_doc.urgent_data_unlocked_date,
