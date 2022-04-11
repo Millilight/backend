@@ -209,6 +209,14 @@ export class Wishes {
     burial_cremation?: Nullable<string>;
     burial_cremation_place?: Nullable<string>;
     music?: Nullable<string>;
+    religion?: Nullable<string>;
+    place?: Nullable<string>;
+    prevoyance?: Nullable<string>;
+    list_of_people?: Nullable<string>;
+    coffin?: Nullable<string>;
+    ornament?: Nullable<string>;
+    text?: Nullable<string>;
+    other?: Nullable<string>;
 }
 
 type Nullable<T> = T | null;

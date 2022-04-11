@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Wishes, WishesSchema } from './wishes.schema';
+import { WishesDB, WishesDBSchema } from './wishes.schema';
 
 import { Document } from 'mongoose';
 import generateToken from '@/utils/generateToken';
@@ -47,8 +47,8 @@ export class UserDB {
   @Prop({ select: false })
   new_email_token_verified?: boolean;
 
-  @Prop({ type: WishesSchema, ref: 'Wishes', default: {} })
-  wishes: Wishes;
+  @Prop({ type: WishesDBSchema, ref: 'wishes', default: {} })
+  wishes: WishesDB;
 }
 
 export const UserDBSchema = SchemaFactory.createForClass(UserDB);
