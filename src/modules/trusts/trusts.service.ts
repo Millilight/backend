@@ -72,7 +72,7 @@ export class TrustsService {
 
   async findAllHeirs(legator_user: Legator | User): Promise<Heir[]> {
     return this.trustModel
-      .find({ legator_user: legator_user._id })
+      .find({ legator_user_id: legator_user._id })
       .then((docs) => docs.map(trustDocToHeir));
   }
 
@@ -80,7 +80,7 @@ export class TrustsService {
     heir_user: Heir | User
   ): Promise<Legator[]> {
     return this.trustModel
-      .find({ heir_user: heir_user._id })
+      .find({ heir_user_id: heir_user._id })
       .then((docs) => docs.map(trustDocToLegator));
   }
 }
