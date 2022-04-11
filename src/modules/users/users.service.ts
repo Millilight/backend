@@ -133,7 +133,7 @@ export class UsersService {
   async updateUser(user: User, user_update: any): Promise<User> {
     return await this.userModel
       .findOneAndUpdate(
-        { user },
+        { _id: user._id },
         {
           $set: convertToDotNotation(user_update),
           $unset: {
@@ -146,7 +146,7 @@ export class UsersService {
       .then((user_doc) => {
         if (!user_doc)
           throw new NotFoundException('The user could not be updated.');
-
+          
         return userDocToUser(user_doc);
       });
   }

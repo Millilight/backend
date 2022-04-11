@@ -32,7 +32,7 @@ type Mutation {
   resetPasswordUser(reset_password_user_dto: ResetPasswordUserDto!): User!
   updateEmailUser(update_email_user_dto: UpdateEmailUserDto!): User!
   updateUser(update_user_dto: UpdateUserDto!): User!
-  updateWishes(update_wishes_dto: UpdateWishesDto!): Wishes!
+  updateWishes(update_wishes_dto: UpdateWishesInput!): Wishes!
   verifyEmail(verify_email_dto: VerifyEmailDto!): VerifyEmailResponse!
 }
 
@@ -58,10 +58,18 @@ input UpdateUserDto {
   password: String
 }
 
-input UpdateWishesDto {
+input UpdateWishesInput {
   burial_cremation: String
   burial_cremation_place: String
   music: String
+  religion: String
+  place: String
+  prevoyance: String
+  list_of_people: String
+  coffin: String
+  ornament: String
+  text: String
+  other: String
 }
 
 type UrgentData {

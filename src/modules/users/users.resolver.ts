@@ -8,7 +8,6 @@ import {
   ResetPasswordUserDto,
   UpdateEmailUserDto,
   UpdateUserDto,
-  UpdateWishesDto,
   User,
   VerifyEmailDto,
   Wishes,
@@ -18,6 +17,7 @@ import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { Public } from '../auth/public.decorator';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
+import { UpdateWishesDto } from './dto/update-wishes.dto';
 
 @Resolver('User')
 @UseFilters(MongoExceptionFilter)
