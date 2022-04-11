@@ -58,11 +58,13 @@ UserDBSchema.pre('findOneAndUpdate', function (next) {
 
   if (user_doc._update.$set == undefined) return next();
 
+  // Add a token if email modified
   if (user_doc._update.$set.new_email != null) {
     user_doc._update.$set.new_email_token = generateToken(32);
     user_doc._update.$set.new_email_token_verified = false;
   }
 
+  // Encrypt the password if modified
   if (user_doc._update.$set.password != null)
     user_doc._update.$set.password = bcrypt.hashSync(
       user_doc._update.$set.password,
@@ -75,6 +77,7 @@ UserDBSchema.pre('findOneAndUpdate', function (next) {
 UserDBSchema.pre('save', function (next) {
   const userDB = this as UserDocument;
 
+  // Encrypt the password if modified
   if (this.isModified('password') || this.isNew)
     userDB.password = bcrypt.hashSync(userDB.password, 10);
   next();
