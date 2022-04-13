@@ -14,25 +14,27 @@ import { UsersModule } from './modules/users/users.module';
 import config from './config/config';
 import { join } from 'path';
 
-//import { upperDirectiveTransformer } from './common/directives/upper-case.directive';
-//import { DirectiveLocation, GraphQLDirective } from 'graphql';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [config],
       isGlobal: true,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
-      definitions: {
-        path: join(process.cwd(), 'src/graphql.ts'),
-        outputAs: 'class',
-        emitTypenameField: true,
-      },
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        typePaths: ['./**/*.graphql'],
+        definitions: {
+          path: join(process.cwd(), 'src/graphql.ts'),
+          outputAs: 'class',
+          emitTypenameField: true,
+        },
+        playground: false,
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        introspection: configService.get<string>('node_env') !== 'production'
+      }),
+      inject: [ConfigService],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
