@@ -8,7 +8,7 @@ export default () => {
       port: parseInt(process.env.APP_PORT, 10) || 3030,
     },
     product_name: process.env.PRODUCT_NAME || 'amuni',
-    baseUrls: {
+    base_urls: {
       home: process.env.HOME_URL || 'https://amuni.fr',
       front:
         process.env.FRONT_URL ||
