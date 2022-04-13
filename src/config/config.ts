@@ -12,7 +12,7 @@ export default () => {
       home: process.env.HOME_URL || 'https://amuni.fr',
       front:
         process.env.FRONT_URL ||
-        'https://app-d3b2a175-fbac-4d7f-9856-5d80eb33e84d.cleverapps.io',
+        'http://localhost:3000/',
     },
     database: {
       mongodb: {
