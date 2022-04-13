@@ -18,5 +18,5 @@
       "@parsers": ["src/common/utils/parsers"],
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "__utils__/MongooseTestModule.ts", "__utils__/fixtures.ts"]
 }

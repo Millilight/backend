@@ -1,4 +1,4 @@
-import { UserDB } from "../../modules/users/schemas/user.schema";
+import { UserDB } from "../src/modules/users/schemas/user.schema";
 import mongoose from "mongoose";
 
 export class Fixtures {
