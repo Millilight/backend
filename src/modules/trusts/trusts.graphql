@@ -20,7 +20,7 @@ type Legator {
   state: StateTrust!
   urgent_data_unlocked: Boolean!
   urgent_data_unlocked_date: Date
-  urgent_data: UrgentData
+  urgent_data: UrgentData!
 }
 
 type UserDetails {
@@ -30,8 +30,8 @@ type UserDetails {
 }
 
 extend type User {
-  heir_users: [Heir!]!
-  legator_users: [Legator!]!
+  heirs: [Heir!]!
+  legators: [Legator!]!
 }
 
 input AddHeirInput {
@@ -84,9 +84,7 @@ type Query {
 }
 
 type Mutation {
-  addHeir(
-    add_heir_user_input: AddHeirInput!
-  ): AddHeirResponse!
+  addHeir(add_heir_user_input: AddHeirInput!): AddHeirResponse!
   verifyEmailWithInvitation(
     verify_email_with_invitation_input: VerifyEmailWithInvitationInput!
   ): VerifyEmailWithInvitationResponse!

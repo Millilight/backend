@@ -1,7 +1,7 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { AskResetPasswordUserInput } from '@gqltypes';
+import { IsEmail } from 'class-validator';
 
-@InputType()
-export class AskResetPasswordUserDto {
-  @Field(() => String)
+export class AskResetPasswordUserDto extends AskResetPasswordUserInput {
+  @IsEmail()
   email: string;
 }

@@ -11,6 +11,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TrustsModule } from './modules/trusts/trusts.module';
 import { UsersModule } from './modules/users/users.module';
+import { WishesModule } from './modules/wishes/wishes.module';
 import config from './config/config';
 import { join } from 'path';
 
@@ -46,6 +47,7 @@ import { join } from 'path';
     AuthModule,
     UsersModule,
     TrustsModule,
+    WishesModule,
   ],
   providers: [
     DateScalar,

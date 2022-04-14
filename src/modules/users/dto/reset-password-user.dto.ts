@@ -1,13 +1,3 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { ResetPasswordUserInput } from '@gqltypes';
 
-@InputType()
-export class ResetPasswordUserDto {
-  @Field(() => String)
-  user_id: string;
-
-  @Field(() => String)
-  token: string;
-
-  @Field(() => String)
-  new_password: string;
-}
+export class ResetPasswordUserDto extends ResetPasswordUserInput {}
