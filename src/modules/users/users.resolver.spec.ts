@@ -7,8 +7,22 @@ import { MailModule } from '../mail/mail.module';
 import { User } from '@gqltypes';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
-import { VerifyEmailDto } from '../auth/verify-email.dto';
+// TODO do not import from auth module
+import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
 import config from '../../config/config';
+
+const A_USER: User = {
+  _id: '624af86f5998c2fdfa851b16',
+  firstname: 'Test',
+  lastname: 'Test',
+  email: 'test@test.fr',
+  heirs: undefined,
+  legators: undefined,
+  urgent_data: {
+    user_id: '624af86f5998c2fdfa851b16',
+    wishes: undefined,
+  },
+};
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
@@ -115,11 +129,11 @@ describe('UsersResolver', () => {
     resolver = module.get<UsersResolver>(UsersResolver);
   });
 
-  it('should be defined', () => {
+  it('should be defined: resolver', () => {
     expect(resolver).toBeDefined();
   });
 
-  describe('create user', () => {
+  describe('createUser', () => {
     it('should create a user', () => {
       return resolver
         .createUser({
@@ -133,12 +147,13 @@ describe('UsersResolver', () => {
           expect(user.lastname).toEqual('TestLastname');
           expect(user.firstname).toEqual('TestFirstname');
           expect(user.email).toEqual('test@test.fr');
-          expect(user.wishes).toBeDefined();
+          expect(user.urgent_data).toBeDefined();
+          expect(user.urgent_data.user_id).toEqual(user._id);
         });
     });
   });
 
-  describe('verify email', () => {
+  describe('verifyEmail', () => {
     it('should verify the user email', () => {
       return resolver
         .verifyEmail({
@@ -151,49 +166,15 @@ describe('UsersResolver', () => {
     });
   });
 
-  describe('update wishes', () => {
-    it('should update the wishes', () => {
-      return resolver
-        .updateWishes(
-          {
-            _id: '624af86f5998c2fdfa851b16',
-            firstname: 'Test',
-            lastname: 'Test',
-            email: 'test@test.fr',
-            wishes: {},
-          },
-          {
-            burial_cremation: 'TEST1',
-            burial_cremation_place: 'TEST2',
-            music: 'TEST3',
-          }
-        )
-        .then((data) => {
-          expect(data.burial_cremation).toEqual('TEST1');
-          expect(data.burial_cremation_place).toEqual('TEST2');
-          expect(data.music).toEqual('TEST3');
-        });
-    });
-  });
-
   describe('update user', () => {
     it('should update the user', () => {
       return resolver
-        .updateUser(
-          {
-            _id: '624af86f5998c2fdfa851b16',
-            firstname: 'Test',
-            lastname: 'Test',
-            email: 'test@test.fr',
-            wishes: {},
-          },
-          {
-            firstname: 'changeTest',
-            lastname: 'changeTest',
-            password: 'changeTest1234@',
-            new_email: 'changetest@test.fr',
-          }
-        )
+        .updateUser(A_USER, {
+          firstname: 'changeTest',
+          lastname: 'changeTest',
+          password: 'changeTest1234@',
+          new_email: 'changetest@test.fr',
+        })
         .then((user) => {
           expect(user._id).toEqual('624af86f5998c2fdfa851b16');
           expect(user.firstname).toEqual('changeTest');
@@ -203,7 +184,7 @@ describe('UsersResolver', () => {
     });
   });
 
-  describe('ask for a password reset', () => {
+  describe('askResetPasswordUser', () => {
     it('should return a success', () => {
       return resolver
         .askResetPasswordUser({
@@ -215,7 +196,7 @@ describe('UsersResolver', () => {
     });
   });
 
-  describe('reset a password', () => {
+  describe('resetPasswordUser', () => {
     it('should return the updated user', () => {
       return resolver
         .resetPasswordUser({
@@ -232,10 +213,10 @@ describe('UsersResolver', () => {
     });
   });
 
-  describe("update user's email", () => {
-    it('should return the updated user', () => {
+  describe('verifyNewEmail', () => {
+    it('should verify token and change email', () => {
       return resolver
-        .updateEmailUser({
+        .verifyNewEmail(A_USER, {
           user_id: '624af86f5998c2fdfa851b16',
           token: 'JLmg8tfHXJOYcd7PMT6mSgNT9qczkyuh',
         })
@@ -247,4 +228,6 @@ describe('UsersResolver', () => {
         });
     });
   });
+
+  //query user
 });

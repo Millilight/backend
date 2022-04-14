@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, Wishes } from '@gqltypes';
 import { UpdateWishesDto } from './dto/update-wishes.dto';
 import { WishesDocument } from './schemas/wishes.schema';
-import { whishesDocToWhises } from '@/utils/parsers';
+import { wishesDocToWishes } from '@/utils/parsers';
 
 @Injectable()
 export class WishesService {
@@ -22,7 +22,7 @@ export class WishesService {
   }
 
   async findByUserIDOrCreate(user_id: string): Promise<Wishes> {
-    return whishesDocToWhises(await this.findDocByUserIDOrCreate(user_id));
+    return wishesDocToWishes(await this.findDocByUserIDOrCreate(user_id));
   }
 
   async update(
