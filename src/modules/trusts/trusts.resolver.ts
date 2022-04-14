@@ -13,7 +13,7 @@ import { CurrentUser } from '../users/users.decorator';
 import { MailService } from '../mail/mail.service';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { TrustsService } from './trusts.service';
-import { UnauthorizedException, UseFilters } from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import generateToken from '@/utils/generateToken';
 import { UnlockUrgentDataDto } from './dto/unlock-urgent-data.dto';
@@ -26,7 +26,6 @@ import {
   User,
   UserDetails,
   VerifyEmailWithInvitationResponse,
-  UrgentData,
 } from 'src/graphql';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
@@ -43,7 +42,7 @@ export class TrustsResolver {
   // TODO : conflict if trust already exists
   @Mutation()
   async addHeir(
-    @Args('add_heir_user_input') add_heir_user_input: AddHeirDto,
+    @Args('add_heir_user_input') add_heir_user_dto: AddHeirDto,
     @CurrentUser() current_user: User
   ): Promise<AddHeirResponse> {
     const legator_user = current_user;
@@ -51,17 +50,15 @@ export class TrustsResolver {
     // 1. Get the future trusted user
     let heir_user;
     try {
-      heir_user = await this.usersService.findByEmail(
-        add_heir_user_input.email
-      );
+      heir_user = await this.usersService.findByEmail(add_heir_user_dto.email);
     } catch (NotFoundException) {}
     const user_already_exist = heir_user ? true : false;
     let create_user_dto: CreateUserDto;
     if (!user_already_exist) {
       create_user_dto = {
-        firstname: add_heir_user_input.firstname,
-        lastname: add_heir_user_input.lastname,
-        email: add_heir_user_input.email,
+        firstname: add_heir_user_dto.firstname,
+        lastname: add_heir_user_dto.lastname,
+        email: add_heir_user_dto.email,
         password: generateToken(32),
       };
       heir_user = await this.usersService.create(create_user_dto);
@@ -94,25 +91,25 @@ export class TrustsResolver {
   @Mutation()
   async confirmSecurityCode(
     @Args('confirm_security_code_input')
-    confirm_security_code_input: ConfirmSecurityCodeDto,
+    confirm_security_code_dto: ConfirmSecurityCodeDto,
     @CurrentUser() current_user: User
   ): Promise<ConfirmSecurityCodeResponse> {
     return this.trustsService
-      .confirmSecurityCode(current_user, confirm_security_code_input)
+      .confirmSecurityCode(current_user, confirm_security_code_dto)
       .then((legator_user) => ({ legator_user: legator_user }));
   }
 
   @Mutation()
   async unlockUrgentData(
     @Args('unlock_urgent_data_input')
-    unlock_urgent_data_input: UnlockUrgentDataDto,
+    unlock_urgent_data_dto: UnlockUrgentDataDto,
     @CurrentUser() current_user: User
   ): Promise<UnlockUrgentDataResponse> {
     // 1. unlock the urgent data in the trust by flipping the bool
     const { legator_user, heir_user } =
       await this.trustsService.unlockUrgentData(
         current_user._id,
-        unlock_urgent_data_input
+        unlock_urgent_data_dto
       );
 
     // 2. send a notification to the legator
