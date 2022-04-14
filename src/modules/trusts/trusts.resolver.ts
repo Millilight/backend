@@ -30,8 +30,6 @@ import {
 } from 'src/graphql';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
-import convertToDotNotation from '@/utils/convertToDotNotation';
-
 
 @Resolver()
 @UseFilters(MongoExceptionFilter)
@@ -56,7 +54,7 @@ export class TrustsResolver {
       heir_user = await this.usersService.findByEmail(
         add_heir_user_input.email
       );
-    } catch {}
+    } catch (NotFoundException) {}
     const user_already_exist = heir_user ? true : false;
     let create_user_dto: CreateUserDto;
     if (!user_already_exist) {
@@ -77,10 +75,7 @@ export class TrustsResolver {
 
     // 3. Send a notitication by email
     if (user_already_exist)
-      await this.mailService.sendHeirNotification(
-        legator_user,
-        heir_user
-      );
+      await this.mailService.sendHeirNotification(legator_user, heir_user);
     else {
       const signup_mail_token = await this.usersService.getSignupMailToken(
         heir_user._id
@@ -138,13 +133,17 @@ export class TrustsResolver {
   @Mutation()
   async verifyEmailWithInvitation(
     @Args('verify_email_with_invitation_input')
-    verify_email_with_invitation_dto: VerifyEmailWithInvitationDto,
+    verify_email_with_invitation_dto: VerifyEmailWithInvitationDto
   ): Promise<VerifyEmailWithInvitationResponse> {
     // Verify email
-    const user = await this.usersService.verifyEmail(verify_email_with_invitation_dto);
+    const user = await this.usersService.verifyEmail(
+      verify_email_with_invitation_dto
+    );
 
     // Remplace the temporary password
-    await this.usersService.updateUser(user, convertToDotNotation(verify_email_with_invitation_dto.password));
+    await this.usersService.update(user, {
+      password: verify_email_with_invitation_dto.password,
+    });
 
     return { sucess: true };
   }
@@ -152,14 +151,10 @@ export class TrustsResolver {
 
 @Resolver(Heir)
 export class HeirResolver {
-  constructor(
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @ResolveField('user_details')
-  async HeirDetails(
-    @Parent() heir_user: Heir
-  ): Promise<UserDetails> {
+  async HeirDetails(@Parent() heir_user: Heir): Promise<UserDetails> {
     return this.usersService.userDetailsByID(heir_user._id);
   }
 }
@@ -168,12 +163,12 @@ export class HeirResolver {
 export class TrustExtendUserResolver {
   constructor(private trustsService: TrustsService) {}
 
-  @ResolveField('heir_users')
+  @ResolveField('heirs')
   async Heirs(@Parent() user: User): Promise<Heir[]> {
     return this.trustsService.findAllHeirs(user);
   }
 
-  @ResolveField('legator_users')
+  @ResolveField('legators')
   async Legators(@Parent() user: User): Promise<Legator[]> {
     return this.trustsService.findAllLegators(user);
   }
@@ -181,22 +176,10 @@ export class TrustExtendUserResolver {
 
 @Resolver(Legator)
 export class LegatorResolver {
-  constructor(
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @ResolveField('user_details')
-  async LegatorDetails(
-    @Parent() legator_user: Legator
-  ): Promise<UserDetails> {
+  async LegatorDetails(@Parent() legator_user: Legator): Promise<UserDetails> {
     return this.usersService.userDetailsByID(legator_user._id);
-  }
-
-  @ResolveField('urgent_data')
-  async UrgentData(
-    @Parent() legator_user: Legator
-  ): Promise<UrgentData> {
-    if(!legator_user.urgent_data_unlocked) throw new UnauthorizedException("Urgent data locked");
-    return this.usersService.getUrgentData(legator_user._id);
   }
 }

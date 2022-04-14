@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { WishesDB, WishesDBSchema } from './wishes.schema';
 
 import { Document } from 'mongoose';
 import generateToken from '@/utils/generateToken';
@@ -26,8 +25,8 @@ export class UserDB {
   @Prop({ required: true, select: false })
   password: string;
 
-  @Prop({ required: true, select: false })
-  signup_mail_token: string;
+  @Prop({ select: false })
+  signup_mail_token?: string;
 
   @Prop({ required: true, select: false, default: false })
   mail_verified: boolean;
@@ -43,16 +42,11 @@ export class UserDB {
 
   @Prop({ select: false })
   new_email_token?: string;
-
-  @Prop({ select: false })
-  new_email_token_verified?: boolean;
-
-  @Prop({ type: WishesDBSchema, ref: 'wishes', default: {} })
-  wishes: WishesDB;
 }
 
 export const UserDBSchema = SchemaFactory.createForClass(UserDB);
 
+// TODO Delete and use findOne and save instead
 UserDBSchema.pre('findOneAndUpdate', function (next) {
   const user_doc = this as any;
 

@@ -37,34 +37,34 @@ export class VerifyEmailWithInvitationInput {
     password: string;
 }
 
-export class AskResetPasswordUserDto {
+export class AskResetPasswordUserInput {
     email: string;
 }
 
-export class CreateUserDto {
+export class CreateUserInput {
     email: string;
     firstname: string;
     lastname: string;
     password: string;
 }
 
-export class LoginUserDto {
+export class LoginUserInput {
     email: string;
     password: string;
 }
 
-export class ResetPasswordUserDto {
+export class ResetPasswordUserInput {
     new_password: string;
     token: string;
     user_id: string;
 }
 
-export class UpdateEmailUserDto {
+export class UpdateEmailUserInput {
     token: string;
     user_id: string;
 }
 
-export class UpdateUserDto {
+export class UpdateUserInput {
     firstname?: Nullable<string>;
     lastname?: Nullable<string>;
     new_email?: Nullable<string>;
@@ -85,10 +85,9 @@ export class UpdateWishesInput {
     other?: Nullable<string>;
 }
 
-export class VerifyEmailDto {
+export class VerifyEmailInput {
     token: string;
     user_id: string;
-    password?: Nullable<string>;
 }
 
 export class Heir {
@@ -110,7 +109,7 @@ export class Legator {
     state: StateTrust;
     urgent_data_unlocked: boolean;
     urgent_data_unlocked_date?: Nullable<Date>;
-    urgent_data?: Nullable<UrgentData>;
+    urgent_data: UrgentData;
 }
 
 export class UserDetails {
@@ -122,8 +121,8 @@ export class UserDetails {
 
 export class User {
     __typename?: 'User';
-    heir_users: Heir[];
-    legator_users: Legator[];
+    heirs: Heir[];
+    legators: Legator[];
     _id: string;
     email: string;
     firstname: string;
@@ -175,21 +174,21 @@ export abstract class IMutation {
 
     abstract unlockUrgentData(unlock_urgent_data_input: UnlockUrgentDataInput): UnlockUrgentDataResponse | Promise<UnlockUrgentDataResponse>;
 
-    abstract askResetPasswordUser(ask_reset_password_user_dto: AskResetPasswordUserDto): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
+    abstract askResetPasswordUser(ask_reset_password_user_dto: AskResetPasswordUserInput): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
 
-    abstract createUser(create_user_dto: CreateUserDto): User | Promise<User>;
+    abstract createUser(create_user_dto: CreateUserInput): User | Promise<User>;
 
-    abstract login(login_user_dto: LoginUserDto): LoginResponse | Promise<LoginResponse>;
+    abstract login(login_user_dto: LoginUserInput): LoginResponse | Promise<LoginResponse>;
 
-    abstract resetPasswordUser(reset_password_user_dto: ResetPasswordUserDto): User | Promise<User>;
+    abstract resetPasswordUser(reset_password_user_dto: ResetPasswordUserInput): User | Promise<User>;
 
-    abstract updateEmailUser(update_email_user_dto: UpdateEmailUserDto): User | Promise<User>;
+    abstract updateEmailUser(update_email_user_dto: UpdateEmailUserInput): User | Promise<User>;
 
-    abstract updateUser(update_user_dto: UpdateUserDto): User | Promise<User>;
+    abstract updateUser(update_user_dto: UpdateUserInput): User | Promise<User>;
 
     abstract updateWishes(update_wishes_dto: UpdateWishesInput): Wishes | Promise<Wishes>;
 
-    abstract verifyEmail(verify_email_dto: VerifyEmailDto): VerifyEmailResponse | Promise<VerifyEmailResponse>;
+    abstract verifyEmail(verify_email_dto: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }
 
 export class AskResetPasswordUserResponse {
@@ -205,6 +204,7 @@ export class LoginResponse {
 
 export class UrgentData {
     __typename?: 'UrgentData';
+    user_id: string;
     wishes: Wishes;
 }
 

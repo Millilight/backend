@@ -1,4 +1,4 @@
-input AskResetPasswordUserDto {
+input AskResetPasswordUserInput {
   email: String!
 }
 
@@ -6,7 +6,7 @@ type AskResetPasswordUserResponse {
   success: Boolean!
 }
 
-input CreateUserDto {
+input CreateUserInput {
   email: String!
   firstname: String!
   lastname: String!
@@ -18,40 +18,40 @@ type LoginResponse {
   user: User!
 }
 
-input LoginUserDto {
+input LoginUserInput {
   email: String!
   password: String!
 }
 
 type Mutation {
   askResetPasswordUser(
-    ask_reset_password_user_dto: AskResetPasswordUserDto!
+    ask_reset_password_user_dto: AskResetPasswordUserInput!
   ): AskResetPasswordUserResponse!
-  createUser(create_user_dto: CreateUserDto!): User!
-  login(login_user_dto: LoginUserDto!): LoginResponse!
-  resetPasswordUser(reset_password_user_dto: ResetPasswordUserDto!): User!
-  updateEmailUser(update_email_user_dto: UpdateEmailUserDto!): User!
-  updateUser(update_user_dto: UpdateUserDto!): User!
+  createUser(create_user_dto: CreateUserInput!): User!
+  login(login_user_dto: LoginUserInput!): LoginResponse!
+  resetPasswordUser(reset_password_user_dto: ResetPasswordUserInput!): User!
+  updateEmailUser(update_email_user_dto: UpdateEmailUserInput!): User!
+  updateUser(update_user_dto: UpdateUserInput!): User!
   updateWishes(update_wishes_dto: UpdateWishesInput!): Wishes!
-  verifyEmail(verify_email_dto: VerifyEmailDto!): VerifyEmailResponse!
+  verifyEmail(verify_email_dto: VerifyEmailInput!): VerifyEmailResponse!
 }
 
 type Query {
   user: User!
 }
 
-input ResetPasswordUserDto {
+input ResetPasswordUserInput {
   new_password: String!
   token: String!
   user_id: String!
 }
 
-input UpdateEmailUserDto {
+input UpdateEmailUserInput {
   token: String!
   user_id: String!
 }
 
-input UpdateUserDto {
+input UpdateUserInput {
   firstname: String
   lastname: String
   new_email: String
@@ -73,7 +73,7 @@ input UpdateWishesInput {
 }
 
 type UrgentData {
-  wishes: Wishes!
+  user_id: String!
 }
 
 type User {
@@ -84,10 +84,9 @@ type User {
   urgent_data: UrgentData!
 }
 
-input VerifyEmailDto {
+input VerifyEmailInput {
   token: String!
   user_id: String!
-  password: String
 }
 
 type VerifyEmailResponse {

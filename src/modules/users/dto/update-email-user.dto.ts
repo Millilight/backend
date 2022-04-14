@@ -1,10 +1,3 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { UpdateEmailUserInput } from '@gqltypes';
 
-@InputType()
-export class UpdateEmailUserDto {
-  @Field(() => String)
-  user_id: string;
-
-  @Field(() => String)
-  token: string;
-}
+export class UpdateEmailUserDto extends UpdateEmailUserInput {}

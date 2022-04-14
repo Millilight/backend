@@ -7,20 +7,17 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import convertToDotNotation from '@/utils/convertToDotNotation';
 import { MongoError } from 'mongodb';
 import generateToken from '@/utils/generateToken';
-import {
-  AskResetPasswordUserDto,
-  CreateUserDto,
-  UrgentData,
-  User,
-  UserDetails,
-  VerifyEmailDto,
-} from '@gqltypes';
+import { User, UserDetails } from '@gqltypes';
 import { UserDocument } from './schemas/user.schema';
 import { userDocToUser } from '@parsers';
-import { UpdateWishesDto } from './dto/update-wishes.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+// TODO do not import from auth module
+import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
+import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +34,7 @@ export class UsersService {
       })
       .catch((exception: MongoError) => {
         if (exception.code == 11000) {
-          throw new ConflictException('This email is already registered');
+          throw new ConflictException('Email already registered');
         }
         throw exception;
       });
@@ -49,10 +46,9 @@ export class UsersService {
       .select('+password')
       .exec()
       .then((user_doc) => {
-        if (!user_doc) throw new NotFoundException('User not found');
-        if (bcrypt.compareSync(password, user_doc.password))
-          return userDocToUser(user_doc);
-        else return null;
+        if (!user_doc || !bcrypt.compareSync(password, user_doc.password))
+          throw new NotFoundException('User not found');
+        return userDocToUser(user_doc);
       });
   }
 
@@ -70,182 +66,134 @@ export class UsersService {
     return await this.userModel
       .findOne({ email: email })
       .exec()
-      .then(userDocToUser); // Only used to check if an user already has an account so as to add him as a truster_user. There is no NotFoundException then.
-  }
-
-  async getNewEmail(user_id: string): Promise<string> {
-    return await this.userModel
-      .findOne({ _id: user_id })
-      .select('+new_email')
-      .exec()
       .then((user_doc) => {
         if (!user_doc) throw new NotFoundException('User not found');
-        return user_doc.new_email;
+        return userDocToUser(user_doc);
       });
   }
 
-  async getNewEmailToken(user_id: string): Promise<string> {
-    return await this.userModel
+  async getNewEmailAndToken(
+    user_id: string
+  ): Promise<{ new_email: string; new_email_token: string }> {
+    return this.userModel
       .findOne({ _id: user_id })
-      .select('+new_email_token')
+      .select('+new_email +new_email_token')
       .exec()
       .then((user_doc) => {
         if (!user_doc) throw new NotFoundException('User not found');
-        return user_doc.new_email_token;
+        if (!user_doc.new_email || !user_doc.new_email_token)
+          throw new ConflictException("User didn't ask for an email change");
+        return {
+          new_email: user_doc.new_email,
+          new_email_token: user_doc.new_email_token,
+        };
       });
   }
 
   async getSignupMailToken(user_id: string): Promise<string> {
     return await this.userModel
       .findOne({ _id: user_id })
-      .select('+signup_mail_token')
+      .select('+signup_mail_token +mail_verified')
       .exec()
       .then((user_doc) => {
         if (!user_doc) throw new NotFoundException('User not found');
+        if (user_doc.mail_verified)
+          throw new ConflictException('Email already verified');
         return user_doc.signup_mail_token;
       });
   }
 
-  async getResetPasswordToken(user_id: string): Promise<string> {
-    return await this.userModel
-      .findOne({ _id: user_id })
-      .select('+reset_password_token')
-      .exec()
-      .then((user_doc) => {
-        if (!user_doc) throw new NotFoundException('User not found');
-        return user_doc.reset_password_token;
-      });
-  }
-
-  async findByIDAndNewMailTokenWithNewEMailAndNewEmailToken(
-    user_id: string,
-    token: string
-  ): Promise<User> {
-    return await this.userModel
-      .findOne({ _id: user_id, new_email_token: token })
-      .select('+new_email +new_email_token')
-      .exec()
-      .then(userDocToUser);
-  }
-
-  async findAll(): Promise<User[]> {
-    return await this.userModel
-      .find()
-      .exec()
-      .then((user_docs) => user_docs.map(userDocToUser));
-  }
-
-  async updateUser(user: User, user_update: any): Promise<User> {
-    return await this.userModel
-      .findOneAndUpdate(
-        { _id: user._id },
-        {
-          $set: convertToDotNotation(user_update),
-          $unset: {
-            reset_password_token: user_update.new_password ? '' : null,
-          },
-        },
-        { new: true, omitUndefined: true }
-      )
-      .exec()
-      .then((user_doc) => {
-        if (!user_doc)
-          throw new NotFoundException('The user could not be updated.');
-        console.log(user_doc);
-
-        return userDocToUser(user_doc);
-      });
-  }
-
-  async updateWishes(
-    user: User,
-    update_wishes_dto: UpdateWishesDto
-  ): Promise<User> {
-    const user_db = await this.userModel.findOne({ _id: user._id });
-    if (!user_db) throw new NotFoundException('User not found.');
-    Object.getOwnPropertyNames(update_wishes_dto).forEach((wish) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      user_db.wishes[wish] = update_wishes_dto[wish];
-    });
-    await user_db.save();
-    return this.userModel.findOne({ _id: user._id }).then(userDocToUser);
-  }
-
-  async updateEmailUser(user: User): Promise<User> {
+  async update(user: User, update_user_dto: UpdateUserDto): Promise<User> {
     const user_doc = await this.userModel.findOne({ _id: user._id });
-    if (!user_doc)
-      throw new NotFoundException('The user could not be updated.');
+    if (!user_doc) throw new NotFoundException('User not found');
+
+    // Update all the fields
+    Object.getOwnPropertyNames(update_user_dto).forEach((field) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      user_doc[field] = update_user_dto[field];
+    });
+
+    // Delete the reset password token if a new password is set
+    if (update_user_dto.password) user_doc.reset_password_token = undefined;
+
+    // Add a token to verify the new email
+    if (update_user_dto.new_email) user_doc.new_email_token = generateToken(32);
+
+    return user_doc.save().then(userDocToUser);
+  }
+
+  async verifyNewEmail(user: User, token: string): Promise<User> {
+    const user_doc = await this.userModel
+      .findOne({ _id: user._id })
+      .select('+new_email +new_email_token')
+      .exec();
+
+    if (!user_doc) throw new NotFoundException('User not found');
+
+    if (user_doc.new_email_token !== token)
+      throw new ConflictException('Wrong token');
+
     user_doc.email = user_doc.new_email;
-    user_doc.new_email = '';
-    user_doc.new_email_token = '';
-    user_doc.new_email_token_verified = false;
+    user_doc.new_email = undefined;
+    user_doc.new_email_token = undefined;
+
     return user_doc.save().then(userDocToUser);
   }
 
   async verifyEmail(verify_email_dto: VerifyEmailDto): Promise<User> {
-    return await this.userModel
+    const user_doc = await this.userModel
       .findOne({ _id: verify_email_dto.user_id })
-      .select('signup_mail_token mail_verified')
-      .then(async (user_doc) => {
-        if (!user_doc) throw new NotFoundException('Unable to find user');
+      .select('+signup_mail_token +mail_verified')
+      .exec();
 
-        if (user_doc.signup_mail_token !== verify_email_dto.token)
-          throw new UnauthorizedException('Wrong token.');
+    if (!user_doc) throw new NotFoundException('User not found');
 
-        if (verify_email_dto.password)
-          user_doc.password = verify_email_dto.password;
+    if (user_doc.mail_verified)
+      throw new ConflictException('Email already verified');
 
-        if (user_doc.mail_verified)
-          throw new ConflictException('This mail has already been verified');
+    if (user_doc.signup_mail_token !== verify_email_dto.token)
+      throw new UnauthorizedException('Wrong token.');
 
-        user_doc.mail_verified = true;
+    user_doc.signup_mail_token = undefined;
+    user_doc.mail_verified = true;
 
-        await user_doc.save();
-
-        return userDocToUser(user_doc);
-      });
+    return user_doc.save().then(userDocToUser);
   }
 
   async askResetPassword(
     ask_reset_password_user_dto: AskResetPasswordUserDto
-  ): Promise<User> {
+  ): Promise<{ user: User; reset_password_token: string }> {
+    const reset_password_token = generateToken(32);
+    // TODO Use findOne and save
     return await this.userModel
       .findOneAndUpdate(
         { email: ask_reset_password_user_dto.email },
-        { reset_password_token: generateToken(32) },
+        { reset_password_token: reset_password_token },
         { new: true, omitUndefined: true }
       )
-      .select('+reset_password_token -wishes')
-      .exec()
-      .then((user_doc) => {
-        if (!user_doc)
-          throw new NotFoundException('The user could not be found.');
-        return userDocToUser(user_doc);
-      });
-  }
-
-  async checkResetPassword(user_id: string, token: string): Promise<User> {
-    return await this.userModel
-      .findOne({ _id: user_id, reset_password_token: token })
-      .select('-wishes') //TODO pas viable par la suite car si on veut ajouter une autre categorie, il faut chercher partout
-      .exec()
-      .then((user_doc) => {
-        if (!user_doc)
-          throw new NotFoundException(
-            'The user did not ask for a password change or he could not be found.'
-          );
-        return userDocToUser(user_doc);
-      });
-  }
-
-  async getUrgentData(user_id: string): Promise<UrgentData> {
-    return await this.userModel
-      .findOne({ _id: user_id })
       .exec()
       .then((user_doc) => {
         if (!user_doc) throw new NotFoundException('User not found');
-        return { wishes: user_doc.wishes };
+        return {
+          user: userDocToUser(user_doc),
+          reset_password_token: reset_password_token,
+        };
       });
+  }
+
+  async verifyTokenAndResetPassword(
+    reset_password_user_dto: ResetPasswordUserDto
+  ): Promise<User> {
+    const user_doc = await this.userModel
+      .findOne({ _id: reset_password_user_dto.user_id })
+      .select('+reset_password_token')
+      .exec();
+    if (!user_doc) throw new NotFoundException('User not found');
+    if (user_doc.reset_password_token !== reset_password_user_dto.token)
+      throw new ConflictException('Wrong token');
+    user_doc.password = reset_password_user_dto.new_password;
+    user_doc.reset_password_token = undefined;
+    return user_doc.save().then(userDocToUser);
   }
 
   async userDetailsByID(user_id: string): Promise<UserDetails> {
