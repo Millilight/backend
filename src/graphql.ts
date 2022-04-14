@@ -59,7 +59,7 @@ export class ResetPasswordUserInput {
     user_id: string;
 }
 
-export class UpdateEmailUserInput {
+export class VerifyNewEmailInput {
     token: string;
     user_id: string;
 }
@@ -174,21 +174,21 @@ export abstract class IMutation {
 
     abstract unlockUrgentData(unlock_urgent_data_input: UnlockUrgentDataInput): UnlockUrgentDataResponse | Promise<UnlockUrgentDataResponse>;
 
-    abstract askResetPasswordUser(ask_reset_password_user_dto: AskResetPasswordUserInput): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
+    abstract askResetPasswordUser(ask_reset_password_user_input: AskResetPasswordUserInput): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
 
-    abstract createUser(create_user_dto: CreateUserInput): User | Promise<User>;
+    abstract createUser(create_user_input: CreateUserInput): User | Promise<User>;
 
-    abstract login(login_user_dto: LoginUserInput): LoginResponse | Promise<LoginResponse>;
+    abstract login(login_user_input: LoginUserInput): LoginResponse | Promise<LoginResponse>;
 
-    abstract resetPasswordUser(reset_password_user_dto: ResetPasswordUserInput): User | Promise<User>;
+    abstract resetPasswordUser(reset_password_user_input: ResetPasswordUserInput): User | Promise<User>;
 
-    abstract updateEmailUser(update_email_user_dto: UpdateEmailUserInput): User | Promise<User>;
+    abstract verifyNewEmail(verify_new_email_input: VerifyNewEmailInput): User | Promise<User>;
 
-    abstract updateUser(update_user_dto: UpdateUserInput): User | Promise<User>;
+    abstract updateUser(update_user_input: UpdateUserInput): User | Promise<User>;
 
-    abstract updateWishes(update_wishes_dto: UpdateWishesInput): Wishes | Promise<Wishes>;
+    abstract updateWishes(update_wishes_input: UpdateWishesInput, update_wishes_dto: UpdateWishesInput): Wishes | Promise<Wishes>;
 
-    abstract verifyEmail(verify_email_dto: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
+    abstract verifyEmail(verify_email_input: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }
 
 export class AskResetPasswordUserResponse {

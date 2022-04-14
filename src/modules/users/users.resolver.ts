@@ -13,7 +13,7 @@ import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
-import { UpdateEmailUserDto } from './dto/update-email-user.dto';
+import { VerifyNewEmailDto } from './dto/verify-new-email.dto';
 
 @Resolver('User')
 @UseFilters(MongoExceptionFilter)
@@ -104,8 +104,8 @@ export class UsersResolver {
   @Mutation()
   verifyNewEmail(
     @CurrentUser() user: User,
-    @Args('update_email_user_input') update_email_user_dto: UpdateEmailUserDto
+    @Args('verify_new_email_input') verify_new_email_dto: VerifyNewEmailDto
   ): Promise<User> {
-    return this.usersService.verifyNewEmail(user, update_email_user_dto.token);
+    return this.usersService.verifyNewEmail(user, verify_new_email_dto.token);
   }
 }

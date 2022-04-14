@@ -25,15 +25,15 @@ input LoginUserInput {
 
 type Mutation {
   askResetPasswordUser(
-    ask_reset_password_user_dto: AskResetPasswordUserInput!
+    ask_reset_password_user_input: AskResetPasswordUserInput!
   ): AskResetPasswordUserResponse!
-  createUser(create_user_dto: CreateUserInput!): User!
-  login(login_user_dto: LoginUserInput!): LoginResponse!
-  resetPasswordUser(reset_password_user_dto: ResetPasswordUserInput!): User!
-  updateEmailUser(update_email_user_dto: UpdateEmailUserInput!): User!
-  updateUser(update_user_dto: UpdateUserInput!): User!
-  updateWishes(update_wishes_dto: UpdateWishesInput!): Wishes!
-  verifyEmail(verify_email_dto: VerifyEmailInput!): VerifyEmailResponse!
+  createUser(create_user_input: CreateUserInput!): User!
+  login(login_user_input: LoginUserInput!): LoginResponse!
+  resetPasswordUser(reset_password_user_input: ResetPasswordUserInput!): User!
+  verifyNewEmail(verify_new_email_input: VerifyNewEmailInput!): User!
+  updateUser(update_user_input: UpdateUserInput!): User!
+  updateWishes(update_wishes_input: UpdateWishesInput!): Wishes!
+  verifyEmail(verify_email_input: VerifyEmailInput!): VerifyEmailResponse!
 }
 
 type Query {
@@ -46,7 +46,7 @@ input ResetPasswordUserInput {
   user_id: String!
 }
 
-input UpdateEmailUserInput {
+input VerifyNewEmailInput {
   token: String!
   user_id: String!
 }
