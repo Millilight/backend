@@ -16,7 +16,7 @@ export default () => {
     },
     database: {
       mongodb: {
-        port: parseInt(process.env.DATABASE_MONGODB_PORT, 10),
+        port: parseInt(process.env.MONGODB_ADDON_PORT, 10) || parseInt(process.env.DATABASE_MONGODB_PORT, 10),
         uri:
           process.env.MONGODB_ADDON_URI ||
           process.env.DATABASE_MONGODB_URI ||
