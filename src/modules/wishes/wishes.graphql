@@ -3,7 +3,7 @@ extend type UrgentData {
 }
 
 type Mutation {
-  updateWishes(update_wishes_dto: UpdateWishesInput!): Wishes!
+  updateWishes(update_wishes_input: UpdateWishesInput!): Wishes!
 }
 
 type Wishes {

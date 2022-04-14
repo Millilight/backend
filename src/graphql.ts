@@ -186,7 +186,7 @@ export abstract class IMutation {
 
     abstract updateUser(update_user_input: UpdateUserInput): User | Promise<User>;
 
-    abstract updateWishes(update_wishes_input: UpdateWishesInput, update_wishes_dto: UpdateWishesInput): Wishes | Promise<Wishes>;
+    abstract updateWishes(update_wishes_input: UpdateWishesInput): Wishes | Promise<Wishes>;
 
     abstract verifyEmail(verify_email_input: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }

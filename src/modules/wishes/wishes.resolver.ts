@@ -20,7 +20,7 @@ export class WishesResolver {
   @Mutation()
   async updateWishes(
     @CurrentUser() user: User,
-    @Args('update_wishes_dto') update_wishes_dto: UpdateWishesDto
+    @Args('update_wishes_input') update_wishes_dto: UpdateWishesDto
   ): Promise<Wishes> {
     return await this.wishesService.update(user, update_wishes_dto);
   }
