@@ -7,7 +7,6 @@ import { CurrentUser } from './users.decorator';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { Public } from '../auth/public.decorator';
 import { MailService } from '../mail/mail.service';
-import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 // TODO do not import from auth module
 import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
@@ -21,8 +20,7 @@ import { UpdateEmailUserDto } from './dto/update-email-user.dto';
 export class UsersResolver {
   constructor(
     private usersService: UsersService,
-    private mailService: MailService,
-    private configService: ConfigService
+    private mailService: MailService
   ) {}
 
   @Public()
@@ -104,11 +102,10 @@ export class UsersResolver {
   // TODO The user needs to ask before (see updateUser mutation) => rename verifyNewEmail
   @Public()
   @Mutation()
-  updateEmailUser(
+  verifyNewEmail(
     @CurrentUser() user: User,
     @Args('update_email_user_input') update_email_user_dto: UpdateEmailUserDto
   ): Promise<User> {
-    // TODO update_email_user_dto.user_id userless => delete
     return this.usersService.verifyNewEmail(user, update_email_user_dto.token);
   }
 }

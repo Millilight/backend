@@ -41,16 +41,16 @@ export const userDocToUser = (user_doc: UserDocument): User => ({
   legators: undefined,
 });
 
-export const whishesDocToWhises = (whished_doc: WishesDocument): Wishes => ({
-  burial_cremation: whished_doc.burial_cremation,
-  burial_cremation_place: whished_doc.burial_cremation_place,
-  coffin: whished_doc.coffin,
-  list_of_people: whished_doc.list_of_people,
-  music: whished_doc.music,
-  ornament: whished_doc.ornament,
-  other: whished_doc.other,
-  place: whished_doc.place,
-  prevoyance: whished_doc.prevoyance,
-  religion: whished_doc.religion,
-  text: whished_doc.text,
+export const wishesDocToWishes = (wished_doc: WishesDocument): Wishes => ({
+  burial_cremation: wished_doc.burial_cremation,
+  burial_cremation_place: wished_doc.burial_cremation_place,
+  coffin: wished_doc.coffin,
+  list_of_people: wished_doc.list_of_people,
+  music: wished_doc.music,
+  ornament: wished_doc.ornament,
+  other: wished_doc.other,
+  place: wished_doc.place,
+  prevoyance: wished_doc.prevoyance,
+  religion: wished_doc.religion,
+  text: wished_doc.text,
 });
