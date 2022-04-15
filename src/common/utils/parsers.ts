@@ -21,7 +21,7 @@ export const trustDocToLegator = (trust_doc: TrustDocument): Legator => ({
   added_date: trust_doc.added_date,
   urgent_data_unlocked: trust_doc.urgent_data_unlocked,
   urgent_data_unlocked_date: trust_doc.urgent_data_unlocked_date,
-  urgent_data: { user_id: trust_doc._id as string, wishes: undefined },
+  urgent_data: undefined,
 });
 
 export const trustDocToLegatorAndHeir = (trust_doc: TrustDocument) => {

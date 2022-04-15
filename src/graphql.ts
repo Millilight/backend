@@ -109,7 +109,7 @@ export class Legator {
     state: StateTrust;
     urgent_data_unlocked: boolean;
     urgent_data_unlocked_date?: Nullable<Date>;
-    urgent_data: UrgentData;
+    urgent_data?: Nullable<UrgentData>;
 }
 
 export class UserDetails {

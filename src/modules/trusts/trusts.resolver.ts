@@ -26,6 +26,7 @@ import {
   User,
   UserDetails,
   VerifyEmailWithInvitationResponse,
+  UrgentData,
 } from 'src/graphql';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
@@ -178,5 +179,11 @@ export class LegatorResolver {
   @ResolveField('user_details')
   async LegatorDetails(@Parent() legator_user: Legator): Promise<UserDetails> {
     return this.usersService.userDetailsByID(legator_user._id);
+  }
+
+  @ResolveField('urgent_data')
+  LegatorUrgentData(@Parent() legator_user: Legator): UrgentData {
+    if (!legator_user.urgent_data_unlocked) return null;
+    return { user_id: legator_user._id, wishes: undefined };
   }
 }
