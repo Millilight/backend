@@ -33,6 +33,6 @@ export class WishesUserResolver {
 
   @ResolveField()
   async wishes(@Parent() urgent_data: UrgentData): Promise<Wishes> {
-    return this.wishesService.findByUserIDOrCreate(urgent_data.user_id);
+    return this.wishesService.findByUserID(urgent_data.user_id);
   }
 }

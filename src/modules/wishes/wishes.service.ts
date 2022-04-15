@@ -21,7 +21,7 @@ export class WishesService {
     return wishes_db;
   }
 
-  async findByUserIDOrCreate(user_id: string): Promise<Wishes> {
+  async findByUserID(user_id: string): Promise<Wishes> {
     return wishesDocToWishes(await this.findDocByUserIDOrCreate(user_id));
   }
 

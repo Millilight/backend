@@ -21,6 +21,8 @@ export class TrustsService {
   constructor(@InjectModel('Trust') private trustModel: Model<TrustDocument>) {}
 
   async create(legator_user: User, heir_user: User): Promise<Heir> {
+    // TODO Do not create duplicated trusts
+    // TODO Do not authorized trust with oneself
     const trust_db: TrustDB = {
       state: StateTrust.INVITATION_SENT,
       heir_user_id: heir_user._id,
@@ -76,9 +78,7 @@ export class TrustsService {
       .then((docs) => docs.map(trustDocToHeir));
   }
 
-  async findAllLegators(
-    heir_user: Heir | User
-  ): Promise<Legator[]> {
+  async findAllLegators(heir_user: Heir | User): Promise<Legator[]> {
     return this.trustModel
       .find({ heir_user_id: heir_user._id })
       .then((docs) => docs.map(trustDocToLegator));
