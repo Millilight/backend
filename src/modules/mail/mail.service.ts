@@ -60,8 +60,8 @@ export class MailService {
 
   async sendUserEmailUpdate(
     user: User,
-    new_email: String,
-    new_email_token: String
+    new_email: string,
+    new_email_token: string
   ) {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(

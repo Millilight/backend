@@ -8,8 +8,7 @@ import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { Public } from '../auth/public.decorator';
 import { MailService } from '../mail/mail.service';
 import { CreateUserDto } from './dto/create-user.dto';
-// TODO do not import from auth module
-import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
@@ -22,6 +21,16 @@ export class UsersResolver {
     private usersService: UsersService,
     private mailService: MailService
   ) {}
+
+  /* QUERIES */
+
+  // Remember that we use JWTAuthGuard by default so as to protect operations
+  @Query()
+  user(@CurrentUser() user: User): User {
+    return user;
+  }
+
+  /* MUTATIONS */
 
   @Public()
   @Mutation()
@@ -47,12 +56,6 @@ export class UsersResolver {
     return { success: true };
   }
 
-  // Remember that we use JWTAuthGuard by default so as to protect operations
-  @Query()
-  user(@CurrentUser() user: User): User {
-    return user;
-  }
-
   @Mutation()
   async updateUser(
     @CurrentUser() user: User,
@@ -60,7 +63,7 @@ export class UsersResolver {
   ): Promise<User> {
     const new_user = await this.usersService.update(user, update_user_dto);
 
-    // Send a mail to confirm the new email
+    // Send a mail to verify the new email
     if (update_user_dto.new_email) {
       const { new_email, new_email_token } =
         await this.usersService.getNewEmailAndToken(new_user._id);
@@ -99,7 +102,6 @@ export class UsersResolver {
     );
   }
 
-  // TODO The user needs to ask before (see updateUser mutation) => rename verifyNewEmail
   @Public()
   @Mutation()
   verifyNewEmail(

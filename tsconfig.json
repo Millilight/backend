@@ -15,8 +15,8 @@
     "paths": {
       "@/utils/*": ["src/common/utils/*"],
       "@gqltypes": ["src/graphql"],
-      "@parsers": ["src/common/utils/parsers"],
+      "@parsers": ["src/common/utils/parsers"]
     }
   },
-  "include": ["src/**/*", "__utils__/MongooseTestModule.ts", "__utils__/fixtures.ts"]
+  "include": ["src/**/*", "__utils__/**/*"]
 }
