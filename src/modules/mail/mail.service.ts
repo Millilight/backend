@@ -14,7 +14,7 @@ export class MailService {
   async sendUserConfirmation(user: User, signup_mail_token: string) {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
-      'baseUrls.front'
+      'base_urls.front'
     )}/auth/confirmation?token=${signup_mail_token}&user_id=${user._id}`;
     await this.mailerService.sendMail({
       to: user.email,
