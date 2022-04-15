@@ -13,8 +13,7 @@ import { User, UserDetails } from '@gqltypes';
 import { UserDocument } from './schemas/user.schema';
 import { userDocToUser } from '@parsers';
 import { CreateUserDto } from './dto/create-user.dto';
-// TODO do not import from auth module
-import { VerifyEmailDto } from '../auth/dto/verify-email.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
