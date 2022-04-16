@@ -4,28 +4,16 @@ import * as mocks_users from '../../../__utils__/mocks.users';
 import { AN_USER, A_TOKEN } from '../../../__utils__/consts';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ConfigModule } from '@nestjs/config';
-import { MailModule } from '../mail/mail.module';
 import { MailService } from '../mail/mail.service';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
-import config from '../../config/config';
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
-  let sendUserEmailUpdate: jest.Mock;
+  let mailService: MailService;
 
   beforeEach(async () => {
-    sendUserEmailUpdate = mocks_mail.sendUserEmailUpdate;
-
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          load: [config],
-          isGlobal: true,
-        }),
-        MailModule,
-      ],
       providers: [
         UsersResolver,
         {
@@ -47,7 +35,7 @@ describe('UsersResolver', () => {
           provide: MailService,
           useFactory: () => ({
             sendUserConfirmation: mocks_mail.sendUserConfirmation,
-            sendUserEmailUpdate: sendUserEmailUpdate,
+            sendUserEmailUpdate: mocks_mail.sendUserEmailUpdate,
             resetPassword: mocks_mail.resetPassword,
           }),
         },
@@ -55,10 +43,12 @@ describe('UsersResolver', () => {
     }).compile();
 
     resolver = module.get<UsersResolver>(UsersResolver);
+    mailService = module.get<MailService>(MailService);
   });
 
-  it('should be defined: resolver', () => {
+  it('should be defined before each', () => {
     expect(resolver).toBeDefined();
+    expect(mailService).toBeDefined();
   });
 
   describe('createUser', () => {
@@ -111,7 +101,9 @@ describe('UsersResolver', () => {
             lastname: 'changeTestlast',
           });
 
-          expect(sendUserEmailUpdate.mock.calls.length).toBe(0);
+          expect(
+            (mailService.sendUserEmailUpdate as jest.Mock).mock.calls.length
+          ).toBe(0);
         });
     });
 
@@ -130,7 +122,9 @@ describe('UsersResolver', () => {
             lastname: 'changeTestlast',
           });
 
-          expect(sendUserEmailUpdate.mock.calls.length).toBe(1);
+          expect(
+            (mailService.sendUserEmailUpdate as jest.Mock).mock.calls.length
+          ).toBe(1);
         });
     });
   });

@@ -1,3 +1,9 @@
+import {
+  AN_ID,
+  A_TOKEN,
+  HASH_REGEX,
+  REGEX_TOKEN,
+} from '../../../__utils__/consts';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDBSchema, UserDocument } from './schemas/user.schema';
@@ -8,11 +14,6 @@ import { MongooseTestModule } from '../../../__utils__/MongooseTestModule';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
 import { userDocToUser } from '@/utils/parsers';
-
-const HASH_REGEX = /^\$2[ayb]\$.{56}$/;
-const REGEX_TOKEN = /^[a-zA-Z0-9]{32}$/;
-const AN_ID = '000000000000000000000000';
-const A_TOKEN = '123456789ABCDEFHIJKLMNOPQRSTabcd';
 
 describe('UserService', () => {
   const db = new MongooseTestModule();
@@ -55,7 +56,7 @@ describe('UserService', () => {
           expect(user.email).toEqual('test@test.fr');
 
           //And in db
-          const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+          const user_doc = await mongoose.models.User.findOne<UserDocument>({
             _id: user._id,
           })
             .select('+password')
@@ -145,7 +146,7 @@ describe('UserService', () => {
       });
 
       const { new_email, new_email_token } =
-        await mongoose.models.UserDB.findOne<UserDocument>({
+        await mongoose.models.User.findOne<UserDocument>({
           _id: user_fixture._id,
         })
           .select('+new_email +new_email_token')
@@ -182,7 +183,7 @@ describe('UserService', () => {
         password: 'test',
       });
       const { signup_mail_token } =
-        await mongoose.models.UserDB.findOne<UserDocument>({
+        await mongoose.models.User.findOne<UserDocument>({
           _id: user._id,
         })
           .select('+signup_mail_token')
@@ -232,7 +233,7 @@ describe('UserService', () => {
       const user_fixture = await fixtures.addUser().then(userDocToUser);
       await service.askResetPassword({ email: user_fixture.email });
 
-      const previous_user = await mongoose.models.UserDB.findOne<UserDocument>({
+      const previous_user = await mongoose.models.User.findOne<UserDocument>({
         _id: user_fixture._id,
       })
         .select('+password +reset_password_token')
@@ -244,7 +245,7 @@ describe('UserService', () => {
         password: 'NewPassword',
       });
 
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user_fixture._id,
       })
         .select('+password +reset_password_token')
@@ -260,7 +261,7 @@ describe('UserService', () => {
       const user_doc_fixture = await fixtures.addUser();
 
       //In DB
-      await mongoose.models.UserDB.findOne<UserDocument>({
+      await mongoose.models.User.findOne<UserDocument>({
         _id: user_doc_fixture._id as string,
       })
         .select('+new_email +new_email_token')
@@ -285,7 +286,7 @@ describe('UserService', () => {
         });
 
       // In DB
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user_fixture._id,
       })
         .select('+new_email +new_email_token')
@@ -325,7 +326,7 @@ describe('UserService', () => {
         new_email: 'new_email@test.fr',
       });
 
-      const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+      const user_doc = await mongoose.models.User.findOne<UserDocument>({
         _id: user_fixture._id,
       })
         .select('+new_email_token')
@@ -337,7 +338,7 @@ describe('UserService', () => {
           expect(user.email).toEqual('new_email@test.fr');
         });
 
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user_fixture._id,
       })
         .select('+new_email +new_email_token')
@@ -383,7 +384,7 @@ describe('UserService', () => {
         password: 'Test1234@',
       });
 
-      const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+      const user_doc = await mongoose.models.User.findOne<UserDocument>({
         _id: user._id,
       })
         .select('+signup_mail_token +mail_verified')
@@ -397,7 +398,7 @@ describe('UserService', () => {
         token: user_doc.signup_mail_token,
       });
 
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user._id,
       })
         .select('+signup_mail_token +mail_verified')
@@ -429,7 +430,7 @@ describe('UserService', () => {
 
     it('should throw wrong token', async () => {
       const user_doc_fixture = await fixtures.addUser();
-      const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+      const user_doc = await mongoose.models.User.findOne<UserDocument>({
         _id: user_doc_fixture._id as string,
       }).exec();
 
@@ -442,7 +443,7 @@ describe('UserService', () => {
         token: user_doc.signup_mail_token,
       });
 
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user_doc._id as string,
       })
         .select('+signup_mail_token +mail_verified')
@@ -457,7 +458,7 @@ describe('UserService', () => {
   describe('askResetPassword', () => {
     it('should create reset password token', async () => {
       const user_doc_fixture = await fixtures.addUser();
-      const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+      const user_doc = await mongoose.models.User.findOne<UserDocument>({
         _id: user_doc_fixture._id as string,
       }).exec();
       expect(user_doc.reset_password_token).toBeUndefined();
@@ -489,7 +490,7 @@ describe('UserService', () => {
     it('should verify the token and change the password', async () => {
       const user_doc_fixture = await fixtures.addUser();
 
-      const user_doc = await mongoose.models.UserDB.findOne<UserDocument>({
+      const user_doc = await mongoose.models.User.findOne<UserDocument>({
         _id: user_doc_fixture._id as string,
       }).exec();
 
@@ -504,7 +505,7 @@ describe('UserService', () => {
         new_password: 'NewPassword',
       });
 
-      return mongoose.models.UserDB.findOne<UserDocument>({
+      return mongoose.models.User.findOne<UserDocument>({
         _id: user_doc_fixture._id as string,
       })
         .select('+password +reset_password_token')

@@ -3,7 +3,6 @@ import * as bcrypt from 'bcrypt';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document } from 'mongoose';
-import generateToken from '@/utils/generateToken';
 
 export type UserDocument = UserDB & Document;
 
@@ -45,28 +44,6 @@ export class UserDB {
 }
 
 export const UserDBSchema = SchemaFactory.createForClass(UserDB);
-
-// TODO Delete and use findOne and save instead
-UserDBSchema.pre('findOneAndUpdate', function (next) {
-  const user_doc = this as any;
-
-  if (user_doc._update.$set == undefined) return next();
-
-  // Add a token if email modified
-  if (user_doc._update.$set.new_email != null) {
-    user_doc._update.$set.new_email_token = generateToken(32);
-    user_doc._update.$set.new_email_token_verified = false;
-  }
-
-  // Encrypt the password if modified
-  if (user_doc._update.$set.password != null)
-    user_doc._update.$set.password = bcrypt.hashSync(
-      user_doc._update.$set.password,
-      10
-    );
-
-  next();
-});
 
 UserDBSchema.pre('save', function (next) {
   const userDB = this as UserDocument;
