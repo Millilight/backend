@@ -1,10 +1,12 @@
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { UserDB, UserDBSchema } from '../src/modules/users/schemas/user.schema';
+import {
+  WishesDB,
+  WishesDBSchema,
+} from '../src/modules/wishes/schemas/wishes.schema';
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-
-const { MongoClient } = require('mongodb');
 
 export class MongooseTestModule {
   private server: MongoMemoryServer;
@@ -17,10 +19,12 @@ export class MongooseTestModule {
     this.server = await MongoMemoryServer.create();
     const uri = await this.server.getUri();
     await mongoose.connect(uri);
-    mongoose.model(UserDB.name, UserDBSchema);
+    mongoose.model('User', UserDBSchema);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    mongoose.model('Wishes', WishesDBSchema);
 
     return MongooseModule.forRootAsync({
-      useFactory: async () => {
+      useFactory: () => {
         return {
           uri: uri,
           ...options,
@@ -36,7 +40,8 @@ export class MongooseTestModule {
   }
 
   cleanup() {
-    return Promise.all(Object.entries(mongoose.models).map(([k, v]) => v.deleteMany({})));
+    return Promise.all(
+      Object.entries(mongoose.models).map(([k, v]) => v.deleteMany({}))
+    );
   }
-
 }

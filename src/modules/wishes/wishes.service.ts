@@ -35,6 +35,8 @@ export class WishesService {
       wishes_db[wish] = update_wishes_dto[wish];
     });
     await wishes_db.save();
-    return this.wishesModel.findOne({ user_id: user._id }); //.then(wishesDocToWishes);
+    return this.wishesModel
+      .findOne({ user_id: user._id })
+      .then(wishesDocToWishes);
   }
 }

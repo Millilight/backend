@@ -162,22 +162,19 @@ export class UsersService {
   async askResetPassword(
     ask_reset_password_user_dto: AskResetPasswordUserDto
   ): Promise<{ user: User; reset_password_token: string }> {
+    const user_doc = await this.userModel
+      .findOne({ email: ask_reset_password_user_dto.email })
+      .exec();
+
+    if (!user_doc) throw new NotFoundException('User not found');
+
     const reset_password_token = generateToken(32);
-    // TODO Use findOne and save
-    return await this.userModel
-      .findOneAndUpdate(
-        { email: ask_reset_password_user_dto.email },
-        { reset_password_token: reset_password_token },
-        { new: true, omitUndefined: true }
-      )
-      .exec()
-      .then((user_doc) => {
-        if (!user_doc) throw new NotFoundException('User not found');
-        return {
-          user: userDocToUser(user_doc),
-          reset_password_token: reset_password_token,
-        };
-      });
+    user_doc.reset_password_token = reset_password_token;
+
+    return {
+      user: await user_doc.save().then(userDocToUser),
+      reset_password_token: reset_password_token,
+    };
   }
 
   async verifyTokenAndResetPassword(
