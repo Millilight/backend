@@ -1,20 +1,20 @@
-import { Module } from '@nestjs/common';
+import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { AuthResolver } from './auth.resolver';
-import { ConfigService } from '@nestjs/config';
+import { LocalStrategy } from './local.strategy';
 import { MailModule } from '../mail/mail.module';
+import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwt.secret'),
         signOptions: {
           expiresIn: configService.get<string>('jwt.expiration'),
@@ -22,7 +22,7 @@ import { MailModule } from '../mail/mail.module';
       }),
       inject: [ConfigService],
     }),
-    MailModule
+    MailModule,
   ],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
   exports: [AuthService],

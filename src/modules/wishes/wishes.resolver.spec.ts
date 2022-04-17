@@ -17,6 +17,7 @@ describe('WishesResolver', () => {
           provide: WishesService,
           useFactory: () => ({
             update: mocks_wishes.update,
+            findByUserID: mocks_wishes.findByUserID,
           }),
         },
       ],

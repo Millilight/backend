@@ -13,22 +13,11 @@ input CreateUserInput {
   password: String!
 }
 
-type LoginResponse {
-  access_token: String!
-  user: User!
-}
-
-input LoginUserInput {
-  email: String!
-  password: String!
-}
-
 type Mutation {
   askResetPasswordUser(
     ask_reset_password_user_input: AskResetPasswordUserInput!
   ): AskResetPasswordUserResponse!
   createUser(create_user_input: CreateUserInput!): User!
-  login(login_user_input: LoginUserInput!): LoginResponse!
   resetPasswordUser(reset_password_user_input: ResetPasswordUserInput!): User!
   verifyNewEmail(verify_new_email_input: VerifyNewEmailInput!): User!
   updateUser(update_user_input: UpdateUserInput!): User!

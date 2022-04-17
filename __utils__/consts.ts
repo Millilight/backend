@@ -25,3 +25,5 @@ export const A_WISHES: Wishes = {
   burial_cremation: 'TestCremation',
   burial_cremation_place: 'TestCremationPlace',
 };
+
+export const A_JWT = '1234';
