@@ -3,9 +3,10 @@ import { AN_USER, A_TOKEN } from './consts';
 import { AskResetPasswordUserDto } from 'src/modules/users/dto/ask-reset-password-user.dto';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/modules/users/dto/update-user.dto';
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { User } from '@gqltypes';
 import { VerifyEmailDto } from 'src/modules/users/dto/verify-email.dto';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export const create = jest.fn(async (user: CreateUserDto): Promise<User> => {
   const res = { ...AN_USER, ...user };
@@ -65,4 +66,8 @@ export const verifyTokenAndResetPassword = jest.fn(
 
 export const verifyNewEmail = jest.fn(
   async (_user: User, _token: string): Promise<User> => Promise.resolve(AN_USER)
+);
+
+export const findByID = jest.fn(
+  async (_user_id: string): Promise<User> => Promise.resolve(AN_USER)
 );
