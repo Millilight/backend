@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document } from 'mongoose';
-import { StateTrust } from 'src/graphql';
-import { UserDocument } from 'src/modules/users/schemas/user.schema';
+import { StateTrust } from '@gqltypes';
 import mongoose from 'mongoose';
 
 export type TrustDocument = TrustDB & Document;

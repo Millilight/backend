@@ -12,6 +12,11 @@ export enum StateTrust {
     VALIDATED = "VALIDATED"
 }
 
+export class LoginUserInput {
+    email: string;
+    password: string;
+}
+
 export class AddHeirInput {
     firstname: string;
     lastname: string;
@@ -45,11 +50,6 @@ export class CreateUserInput {
     email: string;
     firstname: string;
     lastname: string;
-    password: string;
-}
-
-export class LoginUserInput {
-    email: string;
     password: string;
 }
 
@@ -88,6 +88,40 @@ export class UpdateWishesInput {
 export class VerifyEmailInput {
     token: string;
     user_id: string;
+}
+
+export class LoginResponse {
+    __typename?: 'LoginResponse';
+    access_token: string;
+    user: User;
+}
+
+export abstract class IMutation {
+    __typename?: 'IMutation';
+
+    abstract login(login_user_input: LoginUserInput): LoginResponse | Promise<LoginResponse>;
+
+    abstract addHeir(add_heir_user_input: AddHeirInput): AddHeirResponse | Promise<AddHeirResponse>;
+
+    abstract verifyEmailWithInvitation(verify_email_with_invitation_input: VerifyEmailWithInvitationInput): VerifyEmailWithInvitationResponse | Promise<VerifyEmailWithInvitationResponse>;
+
+    abstract confirmSecurityCode(confirm_security_code_input: ConfirmSecurityCodeInput): ConfirmSecurityCodeResponse | Promise<ConfirmSecurityCodeResponse>;
+
+    abstract unlockUrgentData(unlock_urgent_data_input: UnlockUrgentDataInput): UnlockUrgentDataResponse | Promise<UnlockUrgentDataResponse>;
+
+    abstract askResetPasswordUser(ask_reset_password_user_input: AskResetPasswordUserInput): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
+
+    abstract createUser(create_user_input: CreateUserInput): User | Promise<User>;
+
+    abstract resetPasswordUser(reset_password_user_input: ResetPasswordUserInput): User | Promise<User>;
+
+    abstract verifyNewEmail(verify_new_email_input: VerifyNewEmailInput): User | Promise<User>;
+
+    abstract updateUser(update_user_input: UpdateUserInput): User | Promise<User>;
+
+    abstract updateWishes(update_wishes_input: UpdateWishesInput): Wishes | Promise<Wishes>;
+
+    abstract verifyEmail(verify_email_input: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }
 
 export class Heir {
@@ -152,43 +186,7 @@ export class UrgentDataResponse {
 
 export class VerifyEmailWithInvitationResponse {
     __typename?: 'VerifyEmailWithInvitationResponse';
-    sucess: boolean;
-}
-
-export abstract class IQuery {
-    __typename?: 'IQuery';
-
-    abstract urgentData(urgent_data_input: UrgentDataInput): UrgentDataResponse | Promise<UrgentDataResponse>;
-
-    abstract user(): User | Promise<User>;
-}
-
-export abstract class IMutation {
-    __typename?: 'IMutation';
-
-    abstract addHeir(add_heir_user_input: AddHeirInput): AddHeirResponse | Promise<AddHeirResponse>;
-
-    abstract verifyEmailWithInvitation(verify_email_with_invitation_input: VerifyEmailWithInvitationInput): VerifyEmailWithInvitationResponse | Promise<VerifyEmailWithInvitationResponse>;
-
-    abstract confirmSecurityCode(confirm_security_code_input: ConfirmSecurityCodeInput): ConfirmSecurityCodeResponse | Promise<ConfirmSecurityCodeResponse>;
-
-    abstract unlockUrgentData(unlock_urgent_data_input: UnlockUrgentDataInput): UnlockUrgentDataResponse | Promise<UnlockUrgentDataResponse>;
-
-    abstract askResetPasswordUser(ask_reset_password_user_input: AskResetPasswordUserInput): AskResetPasswordUserResponse | Promise<AskResetPasswordUserResponse>;
-
-    abstract createUser(create_user_input: CreateUserInput): User | Promise<User>;
-
-    abstract login(login_user_input: LoginUserInput): LoginResponse | Promise<LoginResponse>;
-
-    abstract resetPasswordUser(reset_password_user_input: ResetPasswordUserInput): User | Promise<User>;
-
-    abstract verifyNewEmail(verify_new_email_input: VerifyNewEmailInput): User | Promise<User>;
-
-    abstract updateUser(update_user_input: UpdateUserInput): User | Promise<User>;
-
-    abstract updateWishes(update_wishes_input: UpdateWishesInput): Wishes | Promise<Wishes>;
-
-    abstract verifyEmail(verify_email_input: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
+    success: boolean;
 }
 
 export class AskResetPasswordUserResponse {
@@ -196,10 +194,10 @@ export class AskResetPasswordUserResponse {
     success: boolean;
 }
 
-export class LoginResponse {
-    __typename?: 'LoginResponse';
-    access_token: string;
-    user: User;
+export abstract class IQuery {
+    __typename?: 'IQuery';
+
+    abstract user(): User | Promise<User>;
 }
 
 export class UrgentData {

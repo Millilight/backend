@@ -76,11 +76,7 @@ input VerifyEmailWithInvitationInput {
 }
 
 type VerifyEmailWithInvitationResponse {
-  sucess: Boolean!
-}
-
-type Query {
-  urgentData(urgent_data_input: UrgentDataInput!): UrgentDataResponse!
+  success: Boolean!
 }
 
 type Mutation {

@@ -39,7 +39,7 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  /* Tests all services*/
+  /* Tests all services */
   describe('create', () => {
     it('should return a new user', async () => {
       return service

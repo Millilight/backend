@@ -32,12 +32,12 @@ type Query {
 input ResetPasswordUserInput {
   new_password: String!
   token: String!
-  user_id: String!
+  user_id: ID!
 }
 
 input VerifyNewEmailInput {
   token: String!
-  user_id: String!
+  user_id: ID!
 }
 
 input UpdateUserInput {
@@ -62,7 +62,7 @@ input UpdateWishesInput {
 }
 
 type UrgentData {
-  user_id: String!
+  user_id: ID!
 }
 
 type User {
@@ -75,7 +75,7 @@ type User {
 
 input VerifyEmailInput {
   token: String!
-  user_id: String!
+  user_id: ID!
 }
 
 type VerifyEmailResponse {

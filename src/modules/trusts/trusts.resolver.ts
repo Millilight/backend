@@ -13,7 +13,7 @@ import { CurrentUser } from '../users/users.decorator';
 import { MailService } from '../mail/mail.service';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { TrustsService } from './trusts.service';
-import { UseFilters } from '@nestjs/common';
+import { ConflictException, UseFilters } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import generateToken from '@/utils/generateToken';
 import { UnlockUrgentDataDto } from './dto/unlock-urgent-data.dto';
@@ -27,7 +27,7 @@ import {
   UserDetails,
   VerifyEmailWithInvitationResponse,
   UrgentData,
-} from 'src/graphql';
+} from '@gqltypes';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
 
@@ -40,13 +40,18 @@ export class TrustsResolver {
     private mailService: MailService
   ) {}
 
-  // TODO : conflict if trust already exists
   @Mutation()
   async addHeir(
     @Args('add_heir_user_input') add_heir_user_dto: AddHeirDto,
     @CurrentUser() current_user: User
   ): Promise<AddHeirResponse> {
     const legator_user = current_user;
+
+    // TODO : conflict if trust already exists, we have to define user_details in heir
+    // 1. Check if it's already a heir for the legator
+    /*const heirs = await this.trustsService.findAllHeirs(legator_user);
+    console.log(heirs);
+    if(heirs.find(heir => heir.user_details.email === add_heir_user_dto.email)) throw new ConflictException('Heir already added');*/
 
     // 1. Get the future trusted user
     let heir_user;
@@ -143,7 +148,7 @@ export class TrustsResolver {
       password: verify_email_with_invitation_dto.password,
     });
 
-    return { sucess: true };
+    return { success: true };
   }
 }
 
