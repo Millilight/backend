@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TrustDB, TrustDocument } from './schemas/trusts.schema';
-import { Legator, StateTrust, Heir, User } from 'src/graphql';
+import { Legator, StateTrust, Heir, User } from '@gqltypes';
 import {
   trustDocToLegator,
   trustDocToLegatorAndHeir,

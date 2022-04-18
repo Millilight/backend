@@ -105,9 +105,8 @@ export class UsersResolver {
   @Public()
   @Mutation()
   verifyNewEmail(
-    @CurrentUser() user: User,
     @Args('verify_new_email_input') verify_new_email_dto: VerifyNewEmailDto
   ): Promise<User> {
-    return this.usersService.verifyNewEmail(user, verify_new_email_dto.token);
+    return this.usersService.verifyNewEmail(verify_new_email_dto);
   }
 }

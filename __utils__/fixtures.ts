@@ -1,10 +1,10 @@
+import { A_TOKEN, A_WISHES } from './consts';
 import { UserDB, UserDocument } from 'src/modules/users/schemas/user.schema';
 import {
   WishesDB,
   WishesDocument,
 } from 'src/modules/wishes/schemas/wishes.schema';
 
-import { A_WISHES } from './consts';
 import mongoose from 'mongoose';
 
 export class Fixtures {

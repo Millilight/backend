@@ -15,7 +15,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/auth/confirmation?token=${signup_mail_token}&user_id=${user._id}`;
+    )}auth/confirmation?token=${signup_mail_token}&user_id=${user._id}`;
     await this.mailerService.sendMail({
       to: user.email,
       // from: '"Support Team" <support@example.com>', // override default from
@@ -39,7 +39,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/user/reinitialisation?token=${reset_password_token}&user_id=${user._id}`;
+    )}user/reinitialisation?token=${reset_password_token}&user_id=${user._id}`;
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -66,7 +66,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/user/changementMail?token=${new_email_token}&user_id=${user._id}`;
+    )}user/changementMail?token=${new_email_token}&user_id=${user._id}`;
 
     await this.mailerService.sendMail({
       to: new_email.toString(),
@@ -89,7 +89,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/trust/notification`;
+    )}trust/notification`;
 
     await this.mailerService.sendMail({
       to: heir_user.email.toString(),
@@ -117,7 +117,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/auth/confirmation?token=${signup_mail_token}&user_id=${
+    )}auth/confirmation?token=${signup_mail_token}&user_id=${
       heir_user._id
     }&fromInvitation=true`;
 
@@ -148,7 +148,7 @@ export class MailService {
     if (this.configService.get<string>('node_env') === 'development') return;
     /*const url = `${this.configService.get<string>(
       'base_urls.front'
-    )}/user/deverouillageUrgent?token=${legator_user.signup_mail_token}&user_id=${
+    )}user/deverouillageUrgent?token=${legator_user.signup_mail_token}&user_id=${
       legator_user._id
     }&fromInvitation=true`;*/
     await this.mailerService.sendMail({

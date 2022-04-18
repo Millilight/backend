@@ -17,6 +17,7 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import { AskResetPasswordUserDto } from './dto/ask-reset-password-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResetPasswordUserDto } from './dto/reset-password-user.dto';
+import { VerifyNewEmailDto } from './dto/verify-new-email.dto';
 
 @Injectable()
 export class UsersService {
@@ -121,15 +122,15 @@ export class UsersService {
     return user_doc.save().then(userDocToUser);
   }
 
-  async verifyNewEmail(user: User, token: string): Promise<User> {
+  async verifyNewEmail(verify_new_email_dto: VerifyNewEmailDto): Promise<User> {
     const user_doc = await this.userModel
-      .findOne({ _id: user._id })
+      .findOne({ _id: verify_new_email_dto.user_id })
       .select('+new_email +new_email_token')
       .exec();
 
     if (!user_doc) throw new NotFoundException('User not found');
 
-    if (user_doc.new_email_token !== token)
+    if (user_doc.new_email_token !== verify_new_email_dto.token)
       throw new ConflictException('Wrong token');
 
     user_doc.email = user_doc.new_email;
