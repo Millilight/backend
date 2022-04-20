@@ -27,6 +27,7 @@ import {
   UserDetails,
   VerifyEmailWithInvitationResponse,
   UrgentData,
+  SensitiveData,
 } from '@gqltypes';
 import { Public } from '../auth/public.decorator';
 import { VerifyEmailWithInvitationDto } from './dto/verify-email-with-invitation.dto';
@@ -190,5 +191,11 @@ export class LegatorResolver {
   LegatorUrgentData(@Parent() legator_user: Legator): UrgentData {
     if (!legator_user.urgent_data_unlocked) return null;
     return { user_id: legator_user._id, wishes: undefined };
+  }
+
+  @ResolveField('sensitive_data')
+  LegatorSensitiveData(@Parent() legator_user: Legator): SensitiveData {
+    if (!legator_user.sensitive_data_unlocked) return null;
+    return { user_id: legator_user._id, procedures: undefined };
   }
 }

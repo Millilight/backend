@@ -227,6 +227,41 @@ describe('GraphQL AppResolver (e2e) {Supertest}', () => {
           });
       });
 
+      it('should update procedures', async () => {
+        await request(app.getHttpServer())
+          .post(GQL)
+          .set('Authorization', `Bearer ${access_token}`)
+          .send({
+            query: `mutation UpdateProcedures($bank_products: [BankProductInput!]) {
+              updateProcedures(
+                update_procedures_input: { bank_products: $bank_products }
+              ) {
+                bank_products {
+                  type
+                  company
+                  localization
+                }
+              }
+            }`,
+            variables: {
+              bank_products: [{
+                type: 'compte courant',
+                company: 'Triodos',
+                localization: 'Amsterdam'
+              }]
+            },
+          })
+          .expect(200)
+          .expect((res) => {
+            const updatedProcedures = res.body.data.updateProcedures;
+            expect(updatedProcedures.bank_products).toEqual([{
+              type: 'compte courant',
+              company: 'Triodos',
+              localization: 'Amsterdam'
+            }]);
+          });
+      });
+
       it('should get the current user', async () => {
           return request(app.getHttpServer())
           .post(GQL)
@@ -253,6 +288,21 @@ describe('GraphQL AppResolver (e2e) {Supertest}', () => {
                     text
                     other
                   }
+                },
+                sensitive_data {
+                  user_id
+                  procedures {
+                    bank_products {
+                      type
+                      company
+                      localization
+                    },
+                    insurance_products {
+                      type
+                      company
+                      localization
+                    }
+                  }
                 }
               }
             }`,
@@ -265,17 +315,30 @@ describe('GraphQL AppResolver (e2e) {Supertest}', () => {
             expect(getUser.firstname).toEqual('TestFirstname');
             expect(getUser.lastname).toEqual('TestLastname');
             expect(getUser.urgent_data.user_id).toEqual(_id);
-            expect(getUser.urgent_data.wishes.burial_cremation).toEqual(null);
-            expect(getUser.urgent_data.wishes.burial_cremation_place).toEqual(null);
-            expect(getUser.urgent_data.wishes.music).toEqual(null);
-            expect(getUser.urgent_data.wishes.religion).toEqual('test');
-            expect(getUser.urgent_data.wishes.place).toEqual(null);
-            expect(getUser.urgent_data.wishes.prevoyance).toEqual(null);
-            expect(getUser.urgent_data.wishes.list_of_people).toEqual(null);
-            expect(getUser.urgent_data.wishes.coffin).toEqual(null);
-            expect(getUser.urgent_data.wishes.ornament).toEqual(null);
-            expect(getUser.urgent_data.wishes.text).toEqual(null);
-            expect(getUser.urgent_data.wishes.other).toEqual(null);
+            expect(getUser.urgent_data.wishes).toEqual({
+              burial_cremation: null,
+              burial_cremation_place: null,
+              coffin: null,
+              list_of_people: null,
+              music: null,
+              ornament: null,
+              other: null,
+              place: null,
+              prevoyance: null,
+              religion: 'test',
+              text: null
+            });
+            expect(getUser.sensitive_data).toEqual({
+              user_id: _id,
+              procedures: {
+                bank_products: [{
+                  type: 'compte courant',
+                  company: 'Triodos',
+                  localization: 'Amsterdam'
+                }],
+                insurance_products: []
+              }
+            });
           });
       });
 
@@ -750,7 +813,6 @@ describe('GraphQL AppResolver (e2e) {Supertest}', () => {
             expect(mails_received[0].template).toContain(
               'src/modules/mail/resetPassword'
             );
-            console.log(mails_received[0].context.url)
             reset_password_token = getParameterFromUrl('token', mails_received[0].context.url);
             expect(reset_password_token).toBeDefined();
             expect(getParameterFromUrl('user_id', mails_received[0].context.url)).toEqual(_id);

@@ -7,7 +7,7 @@ import { MongooseTestModule } from '../../../__utils__/MongooseTestModule';
 import { WishesDBSchema } from './schemas/wishes.schema';
 import { WishesService } from './wishes.service';
 
-describe('UserService', () => {
+describe('WishesService', () => {
   const db = new MongooseTestModule();
   let service: WishesService;
   let fixtures: Fixtures;

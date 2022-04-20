@@ -1,0 +1,89 @@
+extend type SensitiveData {
+  procedures: Procedures!
+}
+
+type Procedures {
+  bank_products: [BankProduct!]!
+  insurance_products: [InsuranceProduct!]!
+  vehicles: [Vehicle!]!
+  properties: [RealEstate!]!
+  consumer_credits: [ConsumerCredit!]!
+  internet_accounts_to_be_deleted: [InternetAccountToBeDeleted!]!
+}
+
+type BankProduct {
+  type: String!
+  company: String!
+  localization: String!
+}
+
+type InsuranceProduct {
+  type: String!
+  company: String!
+  localization: String!
+}
+
+type Vehicle {
+  type: String!
+  registration_number: String!
+}
+
+type RealEstate {
+  type: String!
+  localization: String!
+}
+
+type ConsumerCredit {
+  company: String!
+  contract_number: String!
+}
+
+type InternetAccountToBeDeleted {
+  site: String!
+  username: String!
+}
+
+input BankProductInput {
+  type: String!
+  company: String!
+  localization: String!
+}
+
+input InsuranceProductInput {
+  type: String!
+  company: String!
+  localization: String!
+}
+
+input VehicleInput {
+  type: String!
+  registration_number: String!
+}
+
+input RealEstateInput {
+  type: String!
+  localization: String!
+}
+
+input ConsumerCreditInput {
+  company: String!
+  contract_number: String!
+}
+
+input InternetAccountToBeDeletedInput {
+  site: String!
+  username: String!
+}
+
+input UpdateProceduresInput {
+  bank_products: [BankProductInput!]
+  insurance_products: [InsuranceProductInput!]
+  vehicles: [VehicleInput!]
+  properties: [RealEstateInput!]
+  consumer_credits: [ConsumerCreditInput!]
+  internet_accounts_to_be_deleted: [InternetAccountToBeDeletedInput!]
+}
+
+type Mutation {
+  updateProcedures(update_procedures_input: UpdateProceduresInput!): Procedures!
+}

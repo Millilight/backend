@@ -65,12 +65,17 @@ type UrgentData {
   user_id: ID!
 }
 
+type SensitiveData {
+  user_id: ID!
+}
+
 type User {
   _id: ID!
   email: String!
   firstname: String!
   lastname: String!
   urgent_data: UrgentData!
+  sensitive_data: SensitiveData!
 }
 
 input VerifyEmailInput {
