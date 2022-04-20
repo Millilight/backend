@@ -1,5 +1,6 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DynamicModule, Module } from '@nestjs/common';
 
 import { APP_GUARD } from '@nestjs/core';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
@@ -7,8 +8,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DateScalar } from './common/scalars/date.scalar';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
-import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ProxyModule } from '@finastra/nestjs-proxy';
 import { TrustsModule } from './modules/trusts/trusts.module';
 import { UsersModule } from './modules/users/users.module';
 import { WishesModule } from './modules/wishes/wishes.module';
@@ -21,6 +22,21 @@ import { join } from 'path';
       load: [config],
       isGlobal: true,
     }),
+    // TODO Voir si on peut faire créer un type pour lui
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    ProxyModule.forRoot({
+      services: [
+        {
+          id: 'AMPLITUDE',
+          url: 'https://api.amplitude.com',
+          config: {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
+          },
+        },
+      ],
+    }) as DynamicModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [ConfigModule],
@@ -33,7 +49,7 @@ import { join } from 'path';
         },
         playground: false,
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
-        introspection: configService.get<string>('node_env') !== 'production'
+        introspection: configService.get<string>('node_env') !== 'production',
       }),
       inject: [ConfigService],
     }),

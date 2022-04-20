@@ -23,9 +23,10 @@
     "test": "NODE_ENV=test jest"
   },
   "dependencies": {
-    "@nestjs/cli": "^8.2.4",
+    "@finastra/nestjs-proxy": "^0.6.0",
     "@nestjs-modules/mailer": "^1.6.1",
     "@nestjs/apollo": "^10.0.2",
+    "@nestjs/cli": "^8.2.4",
     "@nestjs/common": "^8.2.3",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.2.3",
