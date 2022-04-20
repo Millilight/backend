@@ -6,6 +6,7 @@ import {
 } from '../src/modules/wishes/schemas/wishes.schema';
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { ProceduresDBSchema } from '../src/modules/procedures/schemas/procedures.schema';
 import mongoose from 'mongoose';
 
 export class MongooseTestModule {
@@ -22,6 +23,7 @@ export class MongooseTestModule {
     mongoose.model('User', UserDBSchema);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     mongoose.model('Wishes', WishesDBSchema);
+    mongoose.model('Procedures', ProceduresDBSchema);
 
     return MongooseModule.forRootAsync({
       useFactory: () => {

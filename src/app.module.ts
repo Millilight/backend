@@ -10,6 +10,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProxyModule } from '@finastra/nestjs-proxy';
+import { ProceduresModule } from './modules/procedures/procedures.module';
 import { TrustsModule } from './modules/trusts/trusts.module';
 import { UsersModule } from './modules/users/users.module';
 import { WishesModule } from './modules/wishes/wishes.module';
@@ -64,6 +65,7 @@ import { join } from 'path';
     UsersModule,
     TrustsModule,
     WishesModule,
+    ProceduresModule
   ],
   providers: [
     DateScalar,

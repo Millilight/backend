@@ -10,6 +10,8 @@ type Heir {
   added_date: Date!
   urgent_data_unlocked: Boolean!
   urgent_data_unlocked_date: Date
+  sensitive_data_unlocked: Boolean!
+  sensitive_data_unlocked_date: Date
   state: StateTrust!
 }
 
@@ -21,6 +23,9 @@ type Legator {
   urgent_data_unlocked: Boolean!
   urgent_data_unlocked_date: Date
   urgent_data: UrgentData
+  sensitive_data_unlocked: Boolean!
+  sensitive_data_unlocked_date: Date
+  sensitive_data: SensitiveData
 }
 
 type UserDetails {
@@ -59,14 +64,6 @@ input UnlockUrgentDataInput {
 
 type UnlockUrgentDataResponse {
   success: Boolean!
-}
-
-input UrgentDataInput {
-  legator_user_id: ID!
-}
-
-type UrgentDataResponse {
-  urgent_data: UrgentData!
 }
 
 input VerifyEmailWithInvitationInput {

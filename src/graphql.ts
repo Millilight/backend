@@ -17,6 +17,47 @@ export class LoginUserInput {
     password: string;
 }
 
+export class BankProductInput {
+    type: string;
+    company: string;
+    localization: string;
+}
+
+export class InsuranceProductInput {
+    type: string;
+    company: string;
+    localization: string;
+}
+
+export class VehicleInput {
+    type: string;
+    registration_number: string;
+}
+
+export class RealEstateInput {
+    type: string;
+    localization: string;
+}
+
+export class ConsumerCreditInput {
+    company: string;
+    contract_number: string;
+}
+
+export class InternetAccountToBeDeletedInput {
+    site: string;
+    username: string;
+}
+
+export class UpdateProceduresInput {
+    bank_products?: Nullable<BankProductInput[]>;
+    insurance_products?: Nullable<InsuranceProductInput[]>;
+    vehicles?: Nullable<VehicleInput[]>;
+    properties?: Nullable<RealEstateInput[]>;
+    consumer_credits?: Nullable<ConsumerCreditInput[]>;
+    internet_accounts_to_be_deleted?: Nullable<InternetAccountToBeDeletedInput[]>;
+}
+
 export class AddHeirInput {
     firstname: string;
     lastname: string;
@@ -29,10 +70,6 @@ export class ConfirmSecurityCodeInput {
 }
 
 export class UnlockUrgentDataInput {
-    legator_user_id: string;
-}
-
-export class UrgentDataInput {
     legator_user_id: string;
 }
 
@@ -101,6 +138,8 @@ export abstract class IMutation {
 
     abstract login(login_user_input: LoginUserInput): LoginResponse | Promise<LoginResponse>;
 
+    abstract updateProcedures(update_procedures_input: UpdateProceduresInput): Procedures | Promise<Procedures>;
+
     abstract addHeir(add_heir_user_input: AddHeirInput): AddHeirResponse | Promise<AddHeirResponse>;
 
     abstract verifyEmailWithInvitation(verify_email_with_invitation_input: VerifyEmailWithInvitationInput): VerifyEmailWithInvitationResponse | Promise<VerifyEmailWithInvitationResponse>;
@@ -124,6 +163,60 @@ export abstract class IMutation {
     abstract verifyEmail(verify_email_input: VerifyEmailInput): VerifyEmailResponse | Promise<VerifyEmailResponse>;
 }
 
+export class SensitiveData {
+    __typename?: 'SensitiveData';
+    procedures: Procedures;
+    user_id: string;
+}
+
+export class Procedures {
+    __typename?: 'Procedures';
+    bank_products: BankProduct[];
+    insurance_products: InsuranceProduct[];
+    vehicles: Vehicle[];
+    properties: RealEstate[];
+    consumer_credits: ConsumerCredit[];
+    internet_accounts_to_be_deleted: InternetAccountToBeDeleted[];
+}
+
+export class BankProduct {
+    __typename?: 'BankProduct';
+    type: string;
+    company: string;
+    localization: string;
+}
+
+export class InsuranceProduct {
+    __typename?: 'InsuranceProduct';
+    type: string;
+    company: string;
+    localization: string;
+}
+
+export class Vehicle {
+    __typename?: 'Vehicle';
+    type: string;
+    registration_number: string;
+}
+
+export class RealEstate {
+    __typename?: 'RealEstate';
+    type: string;
+    localization: string;
+}
+
+export class ConsumerCredit {
+    __typename?: 'ConsumerCredit';
+    company: string;
+    contract_number: string;
+}
+
+export class InternetAccountToBeDeleted {
+    __typename?: 'InternetAccountToBeDeleted';
+    site: string;
+    username: string;
+}
+
 export class Heir {
     __typename?: 'Heir';
     _id: string;
@@ -132,6 +225,8 @@ export class Heir {
     added_date: Date;
     urgent_data_unlocked: boolean;
     urgent_data_unlocked_date?: Nullable<Date>;
+    sensitive_data_unlocked: boolean;
+    sensitive_data_unlocked_date?: Nullable<Date>;
     state: StateTrust;
 }
 
@@ -144,6 +239,9 @@ export class Legator {
     urgent_data_unlocked: boolean;
     urgent_data_unlocked_date?: Nullable<Date>;
     urgent_data?: Nullable<UrgentData>;
+    sensitive_data_unlocked: boolean;
+    sensitive_data_unlocked_date?: Nullable<Date>;
+    sensitive_data?: Nullable<SensitiveData>;
 }
 
 export class UserDetails {
@@ -162,6 +260,7 @@ export class User {
     firstname: string;
     lastname: string;
     urgent_data: UrgentData;
+    sensitive_data: SensitiveData;
 }
 
 export class AddHeirResponse {
@@ -177,11 +276,6 @@ export class ConfirmSecurityCodeResponse {
 export class UnlockUrgentDataResponse {
     __typename?: 'UnlockUrgentDataResponse';
     success: boolean;
-}
-
-export class UrgentDataResponse {
-    __typename?: 'UrgentDataResponse';
-    urgent_data: UrgentData;
 }
 
 export class VerifyEmailWithInvitationResponse {

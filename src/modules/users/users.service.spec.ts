@@ -311,6 +311,7 @@ describe('UserService', () => {
             heirs: undefined,
             legators: undefined,
             urgent_data: undefined,
+            sensitive_data: undefined,
           },
           { firstname: 'Newfirstname' }
         )
@@ -333,7 +334,7 @@ describe('UserService', () => {
         .exec();
 
       await service
-        .verifyNewEmail(user_fixture, user_doc.new_email_token)
+        .verifyNewEmail({token: user_doc.new_email_token, user_id: user_fixture._id})
         .then((user) => {
           expect(user.email).toEqual('new_email@test.fr');
         });
@@ -354,15 +355,9 @@ describe('UserService', () => {
       return expect(
         service.verifyNewEmail(
           {
-            _id: AN_ID,
-            lastname: 'TestLastname',
-            firstname: 'TestFirstname',
-            email: 'test@test.fr',
-            heirs: undefined,
-            legators: undefined,
-            urgent_data: undefined,
+            user_id: AN_ID,
+            token: A_TOKEN
           },
-          A_TOKEN
         )
       ).rejects.toThrowError(new NotFoundException('User not found'));
     });
@@ -370,7 +365,7 @@ describe('UserService', () => {
     it('should throw error when not found user and did not ask to modify email', async () => {
       const user_fixture = await fixtures.addUser().then(userDocToUser);
       return expect(
-        service.verifyNewEmail(user_fixture, 'WrongToken!')
+        service.verifyNewEmail({user_id : user_fixture._id, token: 'WrongToken!'})
       ).rejects.toThrowError(new ConflictException('Wrong token'));
     });
   });

@@ -158,7 +158,7 @@ describe('UsersResolver', () => {
   describe('verifyNewEmail', () => {
     it('should verify token and change email', () => {
       return resolver
-        .verifyNewEmail(AN_USER, {
+        .verifyNewEmail({
           user_id: AN_USER._id,
           token: A_TOKEN,
         })

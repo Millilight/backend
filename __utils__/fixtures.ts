@@ -1,4 +1,5 @@
-import { A_TOKEN, A_WISHES } from './consts';
+import { A_PROCEDURES, A_TOKEN, A_WISHES } from './consts';
+import { ProceduresDB, ProceduresDocument } from 'src/modules/procedures/schemas/procedures.schema';
 import { UserDB, UserDocument } from 'src/modules/users/schemas/user.schema';
 import {
   WishesDB,
@@ -27,5 +28,14 @@ export class Fixtures {
       user_id: user_doc._id as string,
     };
     return mongoose.models.Wishes.create(wishes) as Promise<WishesDocument>;
+  }
+
+  async addProcedures(): Promise<ProceduresDocument> {
+    const user_doc = await this.addUser();
+    const procedures: ProceduresDB = {
+      ...A_PROCEDURES,
+      user_id: user_doc._id as string,
+    };
+    return mongoose.models.Procedures.create(procedures) as Promise<ProceduresDocument>;
   }
 }
