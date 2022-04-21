@@ -28,6 +28,9 @@ export class TrustsService {
       heir_user_id: heir_user._id,
       legator_user_id: legator_user._id,
       security_code: generateToken(8),
+      added_date: undefined,
+      urgent_data_unlocked: false,
+      sensitive_data_unlocked: false
     };
     return this.trustModel.create(trust_db).then(trustDocToHeir);
   }
