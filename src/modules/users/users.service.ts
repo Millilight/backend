@@ -48,6 +48,8 @@ export class UsersService {
       .then((user_doc) => {
         if (!user_doc || !bcrypt.compareSync(password, user_doc.password))
           throw new NotFoundException('User not found');
+        if(!user_doc.mail_verified)
+          throw new UnauthorizedException('Mail not verified');
         return userDocToUser(user_doc);
       });
   }
