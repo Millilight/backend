@@ -43,7 +43,7 @@ export class UsersService {
   async getWithAuth(email: string, password: string): Promise<User> {
     return await this.userModel
       .findOne({ email: email })
-      .select('+password')
+      .select('+password +mail_verified')
       .exec()
       .then((user_doc) => {
         if (!user_doc || !bcrypt.compareSync(password, user_doc.password))
