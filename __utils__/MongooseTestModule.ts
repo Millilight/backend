@@ -1,12 +1,12 @@
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
-import { UserDB, UserDBSchema } from '../src/modules/users/schemas/users.schema';
-import {
-  WishesDB,
-  WishesDBSchema,
-} from '../src/modules/wishes/schemas/wishes.schema';
 
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ProceduresDBSchema } from '../src/modules/procedures/schemas/procedures.schema';
+import { TrustsDBSchema } from '../src/modules/trusts/schemas/trusts.schema';
+import { UserDBSchema } from '../src/modules/users/schemas/users.schema';
+import {
+  WishesDBSchema,
+} from '../src/modules/wishes/schemas/wishes.schema';
 import mongoose from 'mongoose';
 
 export class MongooseTestModule {
@@ -24,6 +24,7 @@ export class MongooseTestModule {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     mongoose.model('Wishes', WishesDBSchema);
     mongoose.model('Procedures', ProceduresDBSchema);
+    mongoose.model('Trusts', TrustsDBSchema);
 
     return MongooseModule.forRootAsync({
       useFactory: () => {

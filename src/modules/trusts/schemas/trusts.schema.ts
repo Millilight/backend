@@ -44,4 +44,4 @@ export class TrustDB {
   sensitive_data_unlocked_date?: Date;
 }
 
-export const TrustDBSchema = SchemaFactory.createForClass(TrustDB);
+export const TrustsDBSchema = SchemaFactory.createForClass(TrustDB);
