@@ -10,7 +10,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TrustDBSchema } from './schemas/trusts.schema';
 import { TrustsService } from './trusts.service';
-import { UserDBSchema } from '../users/schemas/user.schema';
+import { UserDBSchema } from '../users/schemas/users.schema';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 

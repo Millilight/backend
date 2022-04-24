@@ -1,6 +1,6 @@
 import { A_PROCEDURES, A_TOKEN, A_WISHES } from './consts';
 import { ProceduresDB, ProceduresDocument } from 'src/modules/procedures/schemas/procedures.schema';
-import { UserDB, UserDocument } from 'src/modules/users/schemas/user.schema';
+import { UserDB, UserDocument } from 'src/modules/users/schemas/users.schema';
 import {
   WishesDB,
   WishesDocument,

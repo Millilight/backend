@@ -1,5 +1,5 @@
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
-import { UserDB, UserDBSchema } from '../src/modules/users/schemas/user.schema';
+import { UserDB, UserDBSchema } from '../src/modules/users/schemas/users.schema';
 import {
   WishesDB,
   WishesDBSchema,
