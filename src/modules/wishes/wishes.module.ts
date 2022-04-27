@@ -2,7 +2,7 @@ import { WishesResolver, WishesUserResolver } from './wishes.resolver';
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserDBSchema } from '../users/schemas/user.schema';
+import { UserDBSchema } from '../users/schemas/users.schema';
 import { WishesDBSchema } from './schemas/wishes.schema';
 import { WishesService } from './wishes.service';
 

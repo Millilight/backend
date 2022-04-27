@@ -7,7 +7,7 @@ import { InternetAccountToBeDeletedDocument } from 'src/modules/procedures/schem
 import { ProceduresDocument } from 'src/modules/procedures/schemas/procedures.schema';
 import { RealEstateDocument } from 'src/modules/procedures/schemas/real-estate.schema';
 import { TrustDocument } from 'src/modules/trusts/schemas/trusts.schema';
-import { UserDocument } from 'src/modules/users/schemas/user.schema';
+import { UserDocument } from 'src/modules/users/schemas/users.schema';
 import { VehicleDocument } from 'src/modules/procedures/schemas/vehicle.schema';
 import { WishesDocument } from 'src/modules/wishes/schemas/wishes.schema';
 

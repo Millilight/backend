@@ -6,7 +6,7 @@ import {
 } from '../../../__utils__/consts';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserDBSchema, UserDocument } from './schemas/user.schema';
+import { UserDBSchema, UserDocument } from './schemas/users.schema';
 
 import { Fixtures } from '../../../__utils__/fixtures';
 import { MongooseModule } from '@nestjs/mongoose';

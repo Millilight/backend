@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { MongoError } from 'mongodb';
 import generateToken from '@/utils/generateToken';
 import { User, UserDetails } from '@gqltypes';
-import { UserDocument } from './schemas/user.schema';
+import { UserDocument } from './schemas/users.schema';
 import { userDocToUser } from '@parsers';
 import { CreateUserDto } from './dto/create-user.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
