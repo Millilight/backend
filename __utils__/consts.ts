@@ -1,4 +1,4 @@
-import { Procedures, User, Wishes } from '@gqltypes';
+import { Heir, Legator, Procedures, StateTrust, User, Wishes } from '@gqltypes';
 
 export const HASH_REGEX = /^\$2[ayb]\$.{56}$/;
 
@@ -48,6 +48,74 @@ export const A_PROCEDURES: Procedures = {
   consumer_credits: [],
   internet_accounts_to_be_deleted: [],
   vehicles: []
+};
+
+export const A_LEGATOR_USER: User = {
+  _id: AN_ID,
+  firstname: 'Legator',
+  lastname: 'Legator',
+  email: 'legator@test.fr',
+  heirs: undefined,
+  legators: undefined,
+  urgent_data: {
+    user_id: AN_ID,
+    wishes: undefined,
+  },
+  sensitive_data: {
+    user_id: AN_ID,
+    procedures: undefined,
+  },
+};
+
+export const A_HEIR_USER: User = {
+  _id: AN_ID,
+  firstname: 'Heir',
+  lastname: 'Heir',
+  email: 'heir@test.fr',
+  heirs: undefined,
+  legators: undefined,
+  urgent_data: {
+    user_id: AN_ID,
+    wishes: undefined,
+  },
+  sensitive_data: {
+    user_id: AN_ID,
+    procedures: undefined,
+  },
+};
+
+export const A_LEGATOR: Legator = {
+  _id: AN_ID,
+  user_details: {
+    firstname: 'Legator',
+    lastname: 'Legator',
+    email: 'legator@test.fr',
+  },
+  added_date: new Date(),
+  state: StateTrust.INVITATION_SENT,
+  urgent_data_unlocked: false,
+  urgent_data: {
+    user_id: AN_ID,
+    wishes: undefined,
+  },
+  sensitive_data_unlocked: false,
+  sensitive_data: {
+    user_id: AN_ID,
+    procedures: undefined,
+  },
+};
+
+export const A_HEIR: Heir = {
+  _id: AN_ID,
+  user_details: {
+    firstname: 'Heir',
+    lastname: 'Heir',
+    email: 'heir@test.fr',
+  },
+  added_date: new Date(),
+  state: StateTrust.INVITATION_SENT,
+  urgent_data_unlocked: false,
+  sensitive_data_unlocked: false,
 };
 
 export const A_JWT = '1234';

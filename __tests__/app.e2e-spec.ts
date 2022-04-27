@@ -13,7 +13,7 @@ import { AppModule } from '../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { StateTrust } from '../src/graphql';
-import { UserDocument } from '../src/modules/users/schemas/user.schema';
+import { UserDocument } from '../src/modules/users/schemas/users.schema';
 import { getParameterFromUrl } from '../__utils__/utils';
 import mongoose from 'mongoose';
 

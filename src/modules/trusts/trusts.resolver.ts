@@ -13,7 +13,7 @@ import { CurrentUser } from '../users/users.decorator';
 import { MailService } from '../mail/mail.service';
 import { MongoExceptionFilter } from '@/utils/exception.filter';
 import { TrustsService } from './trusts.service';
-import { ConflictException, UseFilters } from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import generateToken from '@/utils/generateToken';
 import { UnlockUrgentDataDto } from './dto/unlock-urgent-data.dto';
