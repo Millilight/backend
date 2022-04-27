@@ -1,5 +1,6 @@
 import { Model } from 'mongoose';
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -21,8 +22,10 @@ export class TrustsService {
   constructor(@InjectModel('Trust') private trustModel: Model<TrustDocument>) {}
 
   async create(legator_user: User, heir_user: User): Promise<Heir> {
-    // TODO Do not create duplicated trusts
-    // TODO Do not authorized trust with oneself
+    // TODO Do not create duplicated trusts (use index on multiple fields)
+    if (legator_user.email === heir_user.email)
+      throw new ConflictException('You can not add yourself as a heir_user');
+
     const trust_db: TrustDB = {
       state: StateTrust.INVITATION_SENT,
       heir_user_id: heir_user._id,
@@ -30,7 +33,7 @@ export class TrustsService {
       security_code: generateToken(8),
       added_date: undefined,
       urgent_data_unlocked: false,
-      sensitive_data_unlocked: false
+      sensitive_data_unlocked: false,
     };
     return this.trustModel.create(trust_db).then(trustDocToHeir);
   }
