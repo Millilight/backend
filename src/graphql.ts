@@ -23,6 +23,11 @@ export class BankProductInput {
     localization: string;
 }
 
+export class LifeInsuranceInput {
+    company: string;
+    contract_number: string;
+}
+
 export class InsuranceProductInput {
     type: string;
     company: string;
@@ -51,6 +56,7 @@ export class InternetAccountToBeDeletedInput {
 
 export class UpdateProceduresInput {
     bank_products?: Nullable<BankProductInput[]>;
+    life_insurances?: Nullable<LifeInsuranceInput[]>;
     insurance_products?: Nullable<InsuranceProductInput[]>;
     vehicles?: Nullable<VehicleInput[]>;
     properties?: Nullable<RealEstateInput[]>;
@@ -222,12 +228,6 @@ export class InternetAccountToBeDeleted {
     __typename?: 'InternetAccountToBeDeleted';
     site: string;
     username: string;
-}
-
-export class LifeInsuranceInput {
-    __typename?: 'LifeInsuranceInput';
-    company: string;
-    contract_number: string;
 }
 
 export class Heir {
