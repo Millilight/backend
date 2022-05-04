@@ -172,6 +172,7 @@ export class SensitiveData {
 export class Procedures {
     __typename?: 'Procedures';
     bank_products: BankProduct[];
+    life_insurances: LifeInsurance[];
     insurance_products: InsuranceProduct[];
     vehicles: Vehicle[];
     properties: RealEstate[];
@@ -184,6 +185,12 @@ export class BankProduct {
     type: string;
     company: string;
     localization: string;
+}
+
+export class LifeInsurance {
+    __typename?: 'LifeInsurance';
+    company: string;
+    contract_number: string;
 }
 
 export class InsuranceProduct {
@@ -215,6 +222,12 @@ export class InternetAccountToBeDeleted {
     __typename?: 'InternetAccountToBeDeleted';
     site: string;
     username: string;
+}
+
+export class LifeInsuranceInput {
+    __typename?: 'LifeInsuranceInput';
+    company: string;
+    contract_number: string;
 }
 
 export class Heir {

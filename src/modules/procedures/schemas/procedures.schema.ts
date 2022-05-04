@@ -1,10 +1,31 @@
 import * as encrypt from 'mongoose-encryption';
 
-import { BankProduct, ConsumerCredit, InsuranceProduct, InternetAccountToBeDeleted, RealEstate, Vehicle } from '@gqltypes';
+import {
+  BankProduct,
+  LifeInsurance,
+  ConsumerCredit,
+  InsuranceProduct,
+  InternetAccountToBeDeleted,
+  RealEstate,
+  Vehicle,
+} from '@gqltypes';
 import { BankProductDocument, BankProductSchema } from './bank-product.schema';
-import { ConsumerCreditDocument, ConsumerCreditSchema } from './consumer-credit.schema';
-import { InsuranceProductDocument, InsuranceProductSchema } from './insurance-product.schema';
-import { InternetAccountToBeDeletedDocument, InternetAccountToBeDeletedSchema } from './internet-account-to-be-deleted.schema';
+import {
+  LifeInsuranceDocument,
+  LifeInsuranceSchema,
+} from './life-insurance.schema';
+import {
+  ConsumerCreditDocument,
+  ConsumerCreditSchema,
+} from './consumer-credit.schema';
+import {
+  InsuranceProductDocument,
+  InsuranceProductSchema,
+} from './insurance-product.schema';
+import {
+  InternetAccountToBeDeletedDocument,
+  InternetAccountToBeDeletedSchema,
+} from './internet-account-to-be-deleted.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { RealEstateDocument, RealEstateSchema } from './real-estate.schema';
 import { VehicleDocument, VehicleSchema } from './vehicle.schema';
@@ -23,22 +44,55 @@ export class ProceduresDB {
   })
   user_id: string;
 
-  @Prop({ type: [BankProductSchema], ref: 'BankProducts', default: [], required: true })
+  @Prop({
+    type: [BankProductSchema],
+    ref: 'BankProducts',
+    default: [],
+    required: true,
+  })
   bank_products: BankProduct[];
 
-  @Prop({ type: [InsuranceProductSchema], ref: 'InsuranceProducts', default: [], required: true })
+  @Prop({
+    type: [LifeInsuranceSchema],
+    ref: 'LifeInsurances',
+    default: [],
+    required: true,
+  })
+  life_insurances: LifeInsurance[];
+
+  @Prop({
+    type: [InsuranceProductSchema],
+    ref: 'InsuranceProducts',
+    default: [],
+    required: true,
+  })
   insurance_products: InsuranceProduct[];
 
   @Prop({ type: [VehicleSchema], ref: 'Vehicles', default: [], required: true })
   vehicles: Vehicle[];
 
-  @Prop({ type: [RealEstateSchema], ref: 'Properties', default: [], required: true })
+  @Prop({
+    type: [RealEstateSchema],
+    ref: 'Properties',
+    default: [],
+    required: true,
+  })
   properties: RealEstate[];
 
-  @Prop({ type: [ConsumerCreditSchema], ref: 'ConsumerCredits', default: [], required: true })
+  @Prop({
+    type: [ConsumerCreditSchema],
+    ref: 'ConsumerCredits',
+    default: [],
+    required: true,
+  })
   consumer_credits: ConsumerCredit[];
 
-  @Prop({ type: [InternetAccountToBeDeletedSchema], ref: 'InternetAccountsToBeDeleted', default: [], required: true })
+  @Prop({
+    type: [InternetAccountToBeDeletedSchema],
+    ref: 'InternetAccountsToBeDeleted',
+    default: [],
+    required: true,
+  })
   internet_accounts_to_be_deleted: InternetAccountToBeDeleted[];
 }
 
