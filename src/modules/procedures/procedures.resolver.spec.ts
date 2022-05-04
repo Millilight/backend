@@ -1,7 +1,10 @@
 import * as mocks_procedures from '../../../__utils__/mocks.procedures';
 
 import { AN_USER, A_PROCEDURES } from '../../../__utils__/consts';
-import { ProceduresResolver, ProceduresUserResolver } from './procedures.resolver';
+import {
+  ProceduresResolver,
+  ProceduresUserResolver,
+} from './procedures.resolver';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ProceduresService } from './procedures.service';
@@ -34,42 +37,56 @@ describe('ProceduresResolver', () => {
     it('should update the procedures', () => {
       return resolver
         .updateProcedures(AN_USER, {
-          vehicles: [{
-            type: "Tracteur",
-            registration_number: "123456789"
-          }],
-          insurance_products: [{
-            type: "assurance vie",
-            company: "AXA",
-            localization: "Uzès"
-          }]
+          vehicles: [
+            {
+              type: 'Tracteur',
+              registration_number: '123456789',
+            },
+          ],
+          insurance_products: [
+            {
+              type: 'assurance vie',
+              company: 'AXA',
+              localization: 'Uzès',
+            },
+          ],
         })
         .then((data) => {
           expect(data).toEqual({
-            bank_products: [{
-              company: "Société Générale",
-              localization: "Uzès",
-              type: "compte courant"
-            }, {
-              company: "BNP Paribas",
-              localization: "Lyon",
-              type: "livret A"
-            }],
-            vehicles: [{
-              type: "Tracteur",
-              registration_number: "123456789"
-            }],
-            insurance_products: [{
-              type: "assurance vie",
-              company: "AXA",
-              localization: "Uzès"
-            }],
-            properties: [{
-              localization: "Uzès",
-              type: "Maison"
-            }],
+            bank_products: [
+              {
+                company: 'Société Générale',
+                localization: 'Uzès',
+                type: 'compte courant',
+              },
+              {
+                company: 'BNP Paribas',
+                localization: 'Lyon',
+                type: 'livret A',
+              },
+            ],
+            vehicles: [
+              {
+                type: 'Tracteur',
+                registration_number: '123456789',
+              },
+            ],
+            insurance_products: [
+              {
+                type: 'assurance vie',
+                company: 'AXA',
+                localization: 'Uzès',
+              },
+            ],
+            properties: [
+              {
+                localization: 'Uzès',
+                type: 'Maison',
+              },
+            ],
+            life_insurances: [],
             consumer_credits: [],
-            internet_accounts_to_be_deleted: []
+            internet_accounts_to_be_deleted: [],
           });
         });
     });

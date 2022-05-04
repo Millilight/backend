@@ -18,7 +18,9 @@ describe('ProceduresService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         await db.start(),
-        MongooseModule.forFeature([{ name: 'Procedures', schema: ProceduresDBSchema }]),
+        MongooseModule.forFeature([
+          { name: 'Procedures', schema: ProceduresDBSchema },
+        ]),
       ],
       providers: [ProceduresService],
     }).compile();
@@ -46,23 +48,29 @@ describe('ProceduresService', () => {
       const procedures_doc = await fixtures.addProcedures();
       return service.findByUserID(procedures_doc.user_id).then((procedures) => {
         expect(procedures).toEqual({
-          bank_products: [{
-            company: "Société Générale",
-            localization: "Uzès",
-            type: "compte courant"
-          }, {
-            company: "BNP Paribas",
-            localization: "Lyon",
-            type: "livret A"
-          }],
-          properties: [{
-            localization: "Uzès",
-            type: "Maison"
-          }],
+          bank_products: [
+            {
+              company: 'Société Générale',
+              localization: 'Uzès',
+              type: 'compte courant',
+            },
+            {
+              company: 'BNP Paribas',
+              localization: 'Lyon',
+              type: 'livret A',
+            },
+          ],
+          properties: [
+            {
+              localization: 'Uzès',
+              type: 'Maison',
+            },
+          ],
+          life_insurances: [],
           consumer_credits: [],
           insurance_products: [],
           internet_accounts_to_be_deleted: [],
-          vehicles: []
+          vehicles: [],
         });
       });
     });
@@ -75,49 +83,62 @@ describe('ProceduresService', () => {
         .update(
           { ...AN_USER, _id: procedures_doc.user_id },
           {
-            bank_products: [{
-              company: "Société Générale",
-              localization: "Uzès",
-              type: "compte courant",
-            }, {
-              company: "BNP Paribas",
-              localization: "Lyon",
-              type: "livret A",
-            }, {
-              company: "LCL",
-              localization: "Lyon",
-              type: "livret jeune",
-            }],
-          insurance_products: [{
-            company: "AXA",
-            localization: "Uzès",
-            type: "assurance vie",
-          }]
-        })
+            bank_products: [
+              {
+                company: 'Société Générale',
+                localization: 'Uzès',
+                type: 'compte courant',
+              },
+              {
+                company: 'BNP Paribas',
+                localization: 'Lyon',
+                type: 'livret A',
+              },
+              {
+                company: 'LCL',
+                localization: 'Lyon',
+                type: 'livret jeune',
+              },
+            ],
+            insurance_products: [
+              {
+                company: 'AXA',
+                localization: 'Uzès',
+                type: 'assurance vie',
+              },
+            ],
+          }
+        )
         .then((procedures) => {
           expect(procedures).toEqual({
             ...A_PROCEDURES,
-            bank_products: [{
-              company: "Société Générale",
-              localization: "Uzès",
-              type: "compte courant",
-            }, {
-              company: "BNP Paribas",
-              localization: "Lyon",
-              type: "livret A",
-            }, {
-              company: "LCL",
-              localization: "Lyon",
-              type: "livret jeune",
-            }],
-          insurance_products: [{
-            company: "AXA",
-            localization: "Uzès",
-            type: "assurance vie",
-          }],
-          consumer_credits: [],
-          internet_accounts_to_be_deleted: [],
-          vehicles: []
+            bank_products: [
+              {
+                company: 'Société Générale',
+                localization: 'Uzès',
+                type: 'compte courant',
+              },
+              {
+                company: 'BNP Paribas',
+                localization: 'Lyon',
+                type: 'livret A',
+              },
+              {
+                company: 'LCL',
+                localization: 'Lyon',
+                type: 'livret jeune',
+              },
+            ],
+            insurance_products: [
+              {
+                company: 'AXA',
+                localization: 'Uzès',
+                type: 'assurance vie',
+              },
+            ],
+            consumer_credits: [],
+            internet_accounts_to_be_deleted: [],
+            vehicles: [],
           });
         });
     });
