@@ -4,6 +4,7 @@ extend type SensitiveData {
 
 type Procedures {
   bank_products: [BankProduct!]!
+  life_insurances: [LifeInsurance!]!
   insurance_products: [InsuranceProduct!]!
   vehicles: [Vehicle!]!
   properties: [RealEstate!]!
@@ -15,6 +16,11 @@ type BankProduct {
   type: String!
   company: String!
   localization: String!
+}
+
+type LifeInsurance {
+  company: String!
+  contract_number: String!
 }
 
 type InsuranceProduct {
@@ -47,6 +53,11 @@ input BankProductInput {
   type: String!
   company: String!
   localization: String!
+}
+
+type LifeInsuranceInput {
+  company: String!
+  contract_number: String!
 }
 
 input InsuranceProductInput {

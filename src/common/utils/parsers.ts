@@ -1,4 +1,17 @@
-import { BankProduct, ConsumerCredit, Heir, InsuranceProduct, InternetAccountToBeDeleted, Legator, Procedures, RealEstate, User, Vehicle, Wishes } from 'src/graphql';
+import {
+  BankProduct,
+  LifeInsurance,
+  ConsumerCredit,
+  Heir,
+  InsuranceProduct,
+  InternetAccountToBeDeleted,
+  Legator,
+  Procedures,
+  RealEstate,
+  User,
+  Vehicle,
+  Wishes,
+} from 'src/graphql';
 
 import { BankProductDocument } from 'src/modules/procedures/schemas/bank-product.schema';
 import { ConsumerCreditDocument } from 'src/modules/procedures/schemas/consumer-credit.schema';
@@ -10,6 +23,7 @@ import { TrustDocument } from 'src/modules/trusts/schemas/trusts.schema';
 import { UserDocument } from 'src/modules/users/schemas/user.schema';
 import { VehicleDocument } from 'src/modules/procedures/schemas/vehicle.schema';
 import { WishesDocument } from 'src/modules/wishes/schemas/wishes.schema';
+import { LifeInsuranceDocument } from 'src/modules/procedures/schemas/life-insurance.schema';
 
 export const trustDocToHeir = (trust_doc: TrustDocument): Heir => ({
   _id: trust_doc.heir_user_id,
@@ -68,43 +82,72 @@ export const wishesDocToWishes = (wished_doc: WishesDocument): Wishes => ({
   text: wished_doc.text,
 });
 
-export const proceduresDocToProcedures = (procedures_doc: ProceduresDocument): Procedures => ({
+export const proceduresDocToProcedures = (
+  procedures_doc: ProceduresDocument
+): Procedures => ({
   bank_products: procedures_doc.bank_products.map(bankProductDocToBankProduct),
-  insurance_products: procedures_doc.insurance_products.map(insuranceProductDocToInsuranceProduct),
+  life_insurances: procedures_doc.life_insurances.map(
+    lifeInsuranceDocToLifeInsurance
+  ),
+  insurance_products: procedures_doc.insurance_products.map(
+    insuranceProductDocToInsuranceProduct
+  ),
   vehicles: procedures_doc.vehicles.map(vehicleDocToVehicle),
   properties: procedures_doc.properties.map(realEstateDocToRealEstate),
-  consumer_credits: procedures_doc.consumer_credits.map(consumerCreditDocToConsumerCredit),
-  internet_accounts_to_be_deleted: procedures_doc.internet_accounts_to_be_deleted.map(internetAccountToBeDeletedDocTointernetAccountToBeDeleted),
+  consumer_credits: procedures_doc.consumer_credits.map(
+    consumerCreditDocToConsumerCredit
+  ),
+  internet_accounts_to_be_deleted:
+    procedures_doc.internet_accounts_to_be_deleted.map(
+      internetAccountToBeDeletedDocTointernetAccountToBeDeleted
+    ),
 });
 
-export const bankProductDocToBankProduct = (bank_product_doc : BankProductDocument) : BankProduct => ({
+export const bankProductDocToBankProduct = (
+  bank_product_doc: BankProductDocument
+): BankProduct => ({
   type: bank_product_doc.type,
   company: bank_product_doc.company,
-  localization: bank_product_doc.localization
+  localization: bank_product_doc.localization,
 });
 
-export const insuranceProductDocToInsuranceProduct = (insurance_product_doc : InsuranceProductDocument) : InsuranceProduct => ({
+export const lifeInsuranceDocToLifeInsurance = (
+  life_insurance_doc: LifeInsuranceDocument
+): LifeInsurance => ({
+  company: life_insurance_doc.company,
+  contract_number: life_insurance_doc.contract_number,
+});
+
+export const insuranceProductDocToInsuranceProduct = (
+  insurance_product_doc: InsuranceProductDocument
+): InsuranceProduct => ({
   type: insurance_product_doc.type,
   company: insurance_product_doc.company,
-  localization: insurance_product_doc.localization
+  localization: insurance_product_doc.localization,
 });
 
-export const vehicleDocToVehicle = (vehicle_doc : VehicleDocument) : Vehicle => ({
+export const vehicleDocToVehicle = (vehicle_doc: VehicleDocument): Vehicle => ({
   type: vehicle_doc.type,
   registration_number: vehicle_doc.registration_number,
 });
 
-export const realEstateDocToRealEstate = (real_estate_doc : RealEstateDocument) : RealEstate => ({
+export const realEstateDocToRealEstate = (
+  real_estate_doc: RealEstateDocument
+): RealEstate => ({
   type: real_estate_doc.type,
   localization: real_estate_doc.localization,
 });
 
-export const consumerCreditDocToConsumerCredit = (consumer_credit_doc : ConsumerCreditDocument) : ConsumerCredit => ({
+export const consumerCreditDocToConsumerCredit = (
+  consumer_credit_doc: ConsumerCreditDocument
+): ConsumerCredit => ({
   company: consumer_credit_doc.company,
   contract_number: consumer_credit_doc.contract_number,
 });
 
-export const internetAccountToBeDeletedDocTointernetAccountToBeDeleted = (internet_account_to_be_deleted_doc : InternetAccountToBeDeletedDocument) : InternetAccountToBeDeleted => ({
+export const internetAccountToBeDeletedDocTointernetAccountToBeDeleted = (
+  internet_account_to_be_deleted_doc: InternetAccountToBeDeletedDocument
+): InternetAccountToBeDeleted => ({
   site: internet_account_to_be_deleted_doc.site,
   username: internet_account_to_be_deleted_doc.username,
 });
