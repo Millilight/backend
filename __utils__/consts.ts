@@ -31,23 +31,29 @@ export const A_WISHES: Wishes = {
 };
 
 export const A_PROCEDURES: Procedures = {
-  bank_products: [{
-    type: "compte courant",
-    company: "Société Générale",
-    localization: "Uzès"
-  }, {
-    type: "livret A",
-    company: "BNP Paribas",
-    localization: "Lyon"
-  }],
-  properties: [{
-    type: "Maison",
-    localization: "Uzès"
-  }],
+  bank_products: [
+    {
+      type: 'compte courant',
+      company: 'Société Générale',
+      localization: 'Uzès',
+    },
+    {
+      type: 'livret A',
+      company: 'BNP Paribas',
+      localization: 'Lyon',
+    },
+  ],
+  properties: [
+    {
+      type: 'Maison',
+      localization: 'Uzès',
+    },
+  ],
+  life_insurances: [],
   insurance_products: [],
   consumer_credits: [],
   internet_accounts_to_be_deleted: [],
-  vehicles: []
+  vehicles: [],
 };
 
 export const A_JWT = '1234';
