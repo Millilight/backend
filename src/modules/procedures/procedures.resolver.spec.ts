@@ -43,9 +43,12 @@ describe('ProceduresResolver', () => {
               registration_number: '123456789',
             },
           ],
+          life_insurances: [
+            { company: 'Allianz', contract_number: '123ABCDE' },
+          ],
           insurance_products: [
             {
-              type: 'assurance vie',
+              type: 'assurance auto',
               company: 'AXA',
               localization: 'Uzès',
             },
@@ -73,7 +76,7 @@ describe('ProceduresResolver', () => {
             ],
             insurance_products: [
               {
-                type: 'assurance vie',
+                type: 'assurance auto',
                 company: 'AXA',
                 localization: 'Uzès',
               },
@@ -84,7 +87,9 @@ describe('ProceduresResolver', () => {
                 type: 'Maison',
               },
             ],
-            life_insurances: [],
+            life_insurances: [
+              { company: 'Allianz', contract_number: '123ABCDE' },
+            ],
             consumer_credits: [],
             internet_accounts_to_be_deleted: [],
           });

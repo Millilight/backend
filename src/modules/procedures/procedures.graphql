@@ -55,7 +55,7 @@ input BankProductInput {
   localization: String!
 }
 
-type LifeInsuranceInput {
+input LifeInsuranceInput {
   company: String!
   contract_number: String!
 }
@@ -88,6 +88,7 @@ input InternetAccountToBeDeletedInput {
 
 input UpdateProceduresInput {
   bank_products: [BankProductInput!]
+  life_insurances: [LifeInsuranceInput!]
   insurance_products: [InsuranceProductInput!]
   vehicles: [VehicleInput!]
   properties: [RealEstateInput!]
